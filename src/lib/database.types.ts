@@ -35,6 +35,7 @@ export interface Database {
           id?: string;
           role?: 'customer' | 'admin';
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -103,6 +104,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       product_images: {
         Row: {
@@ -135,6 +137,15 @@ export interface Database {
           display_order?: number;
           variant_key?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'product_images_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       deals: {
         Row: {
@@ -176,6 +187,7 @@ export interface Database {
           applicable_products?: string[] | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       enquiries: {
         Row: {
@@ -214,6 +226,7 @@ export interface Database {
           status?: EnquiryStatus;
           created_at?: string;
         };
+        Relationships: [];
       };
       orders: {
         Row: {
@@ -258,6 +271,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       reviews: {
         Row: {
@@ -293,6 +307,7 @@ export interface Database {
           is_offline?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       site_settings: {
         Row: {
@@ -307,6 +322,7 @@ export interface Database {
           key?: string;
           value?: Json;
         };
+        Relationships: [];
       };
       pages: {
         Row: {
@@ -330,6 +346,7 @@ export interface Database {
           meta_description?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       newsletter_leads: {
         Row: {
@@ -347,6 +364,7 @@ export interface Database {
           contact?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       contact_messages: {
         Row: {
@@ -370,7 +388,11 @@ export interface Database {
           message?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       is_admin: {
@@ -392,6 +414,16 @@ export interface Database {
         };
       };
     };
+    Enums: {
+      stock_status: StockStatus;
+      chat_channel: ChatChannel;
+      enquiry_status: EnquiryStatus;
+      order_status: OrderStatus;
+      review_status: ReviewStatus;
+      discount_type: DiscountType;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 }
-

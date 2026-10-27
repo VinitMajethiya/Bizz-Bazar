@@ -1,7 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSiteSettings } from '../lib/hooks/useCatalog';
 
 export const Footer: React.FC = () => {
+  const { data: settings } = useSiteSettings();
+
+  const brandName = settings?.brand_name || 'By Raya.co';
+  const instagramHandle = settings?.instagram_handle || 'by.raya.co';
+  const footerText =
+    settings?.footer_text ||
+    'Effortless elegance for every occasion. Everyday luxury, without the luxury price.';
+
   return (
     <footer className="border-t border-line bg-surface mt-auto text-ink transition-colors">
       <div className="max-w-site mx-auto px-5 md:px-8 py-12">
@@ -9,20 +18,20 @@ export const Footer: React.FC = () => {
           {/* Brand Col */}
           <div className="space-y-3">
             <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
-              By Raya.co
+              {brandName}
             </h3>
-            <p className="text-xs text-muted leading-relaxed max-w-xs">
-              Effortless elegance for every occasion. Everyday luxury, without the luxury price.
+            <p className="text-xs text-muted leading-relaxed max-w-xs font-light">
+              {footerText}
             </p>
             <p className="text-xs text-muted">
               Connect on Instagram:{' '}
               <a
-                href="https://instagram.com/by.raya.co"
+                href={`https://instagram.com/${instagramHandle}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent hover:underline font-medium"
               >
-                @by.raya.co
+                @{instagramHandle}
               </a>
             </p>
           </div>
@@ -30,9 +39,9 @@ export const Footer: React.FC = () => {
           {/* Shop */}
           <div className="space-y-3">
             <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
-              Shop
+              Catalogue
             </h3>
-            <ul className="space-y-2 text-xs text-muted">
+            <ul className="space-y-2 text-xs text-muted font-light">
               <li>
                 <Link to="/shop" className="hover:text-ink transition-colors">
                   All Jewellery
@@ -54,8 +63,13 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/shop?category=Gift Sets" className="hover:text-ink transition-colors">
+                  Gift Sets
+                </Link>
+              </li>
+              <li>
                 <Link to="/deals" className="hover:text-ink transition-colors">
-                  Deals & Sets
+                  Deals &amp; Sets
                 </Link>
               </li>
             </ul>
@@ -66,7 +80,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
               About
             </h3>
-            <ul className="space-y-2 text-xs text-muted">
+            <ul className="space-y-2 text-xs text-muted font-light">
               <li>
                 <Link to="/our-story" className="hover:text-ink transition-colors">
                   Our Story
@@ -79,7 +93,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/shipping-returns" className="hover:text-ink transition-colors">
-                  Shipping & Returns
+                  Shipping &amp; Returns
                 </Link>
               </li>
             </ul>
@@ -90,7 +104,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
               Legal
             </h3>
-            <ul className="space-y-2 text-xs text-muted">
+            <ul className="space-y-2 text-xs text-muted font-light">
               <li>
                 <Link to="/privacy" className="hover:text-ink transition-colors">
                   Privacy Policy
@@ -110,9 +124,9 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-line/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-muted">
-          <p>&copy; {new Date().getFullYear()} By Raya.co. All rights reserved.</p>
-          <p>Orders are confirmed via WhatsApp &amp; Instagram DM.</p>
+        <div className="border-t border-line/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-muted font-light">
+          <p>&copy; {new Date().getFullYear()} {brandName}. All rights reserved.</p>
+          <p>Orders are placed via WhatsApp &amp; Instagram DM.</p>
         </div>
       </div>
     </footer>
@@ -120,4 +134,3 @@ export const Footer: React.FC = () => {
 };
 
 export default Footer;
-

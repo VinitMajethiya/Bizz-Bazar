@@ -1,5 +1,8 @@
 import React from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { useProducts } from '../../lib/hooks/useCatalog';
+import { ProductCard } from '../../components/ui/ProductCard';
+import { ProductGridSkeleton } from '../../components/ui/Skeleton';
 
 const CATEGORIES = ['All', 'Earrings', 'Bracelets', 'Necklaces', 'Rings', 'Gift Sets'];
 
@@ -7,6 +10,13 @@ export const Shop: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get('category') || 'All';
   const currentSort = searchParams.get('sort') || 'featured';
+
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useProducts(currentCategory, currentSort);
 
   const handleCategoryChange = (cat: string) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -20,32 +30,46 @@ export const Shop: React.FC = () => {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const nextParams = new URLSearchParams(searchParams);
-    nextParams.set('sort', e.target.value);
+    const val = e.target.value;
+    if (val === 'featured') {
+      nextParams.delete('sort');
+    } else {
+      nextParams.set('sort', val);
+    }
     setSearchParams(nextParams);
   };
 
   return (
-    <div className="max-w-site mx-auto px-5 md:px-8 py-10">
+    <div className="max-w-site mx-auto px-5 md:px-8 py-8 sm:py-12">
+      {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-light text-ink">Catalogue</h1>
-        <p className="text-xs text-muted mt-1">Explore effortless jewellery for everyday wear</p>
+        <p className="text-xs text-muted mt-1 font-light">
+          Effortless jewellery crafted for everyday elegance
+        </p>
       </div>
 
-      {/* Tabs and Sort controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-line pb-4 mb-8">
-        {/* Category Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-none">
+      {/* Controls row: Category Tabs on left, Sort on right */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4 mb-8">
+        {/* Category Tabs */}
+        <div
+          className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-none"
+          role="tablist"
+          aria-label="Filter products by category"
+        >
           {CATEGORIES.map((cat) => {
-            const isActive = currentCategory === cat;
+            const isActive = currentCategory.toLowerCase() === cat.toLowerCase();
             return (
               <button
                 key={cat}
                 type="button"
+                role="tab"
+                aria-selected={isActive}
                 onClick={() => handleCategoryChange(cat)}
-                className={`min-h-[36px] px-3.5 py-1.5 text-xs whitespace-nowrap rounded-ui transition-colors ${
+                className={`min-h-[38px] px-3.5 py-1.5 text-xs whitespace-nowrap rounded-ui transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent ${
                   isActive
                     ? 'bg-ink text-bg font-medium'
-                    : 'bg-surface text-ink hover:bg-line/60'
+                    : 'bg-surface text-ink hover:bg-line/70 font-light'
                 }`}
               >
                 {cat}
@@ -56,13 +80,14 @@ export const Shop: React.FC = () => {
 
         {/* Sort Select */}
         <div className="flex items-center gap-2 self-end sm:self-auto text-xs">
-          <label htmlFor="shop-sort" className="text-muted">
+          <label htmlFor="shop-sort" className="text-muted font-light whitespace-nowrap">
             Sort by:
           </label>
           <select
             id="shop-sort"
             value={currentSort}
             onChange={handleSortChange}
+            aria-label="Sort products"
             className="bg-surface border border-line text-ink rounded-ui px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-accent"
           >
             <option value="featured">Featured</option>
@@ -73,48 +98,49 @@ export const Shop: React.FC = () => {
         </div>
       </div>
 
-      {/* Product Grid Placeholder */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {[
-          { name: 'Lilac Twist Hoops', slug: 'lilac-twist-hoops', price: '₹499', compare: '₹699', badge: 'New Drop' },
-          { name: 'Ruby Claw Studs', slug: 'ruby-claw-studs', price: '₹649', compare: null, badge: 'Bestseller' },
-          { name: 'Seashell Cuff', slug: 'seashell-cuff', price: '₹899', compare: '₹1,199', badge: 'Limited Edition' },
-          { name: 'Golden Blossom Studs', slug: 'golden-blossom-studs', price: '₹749', compare: null, badge: 'Low Stock' },
-          { name: 'Turquoise Daisy Necklace', slug: 'turquoise-daisy-necklace', price: '₹999', compare: null, badge: 'Bestseller' },
-          { name: 'Stacked Chain Set', slug: 'stacked-chain-set', price: '₹1,199', compare: '₹1,499', badge: 'Sale' },
-          { name: 'Ocean Shell Pendant', slug: 'ocean-shell-pendant', price: '₹849', compare: null, badge: 'New Drop' },
-          { name: 'Crystal Square Drops', slug: 'crystal-square-drops', price: '₹549', compare: null, badge: 'Sold Out' },
-        ].map((item) => (
-          <Link
-            key={item.slug}
-            to={`/product/${item.slug}`}
-            className="group block space-y-2"
+      {/* Error state */}
+      {isError && (
+        <div className="py-16 text-center space-y-3">
+          <p className="text-xs text-danger">We couldn’t load the catalogue. Check your connection.</p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="px-4 py-2 border border-line text-xs uppercase tracking-wider rounded-ui hover:border-ink transition-colors"
           >
-            <div className="relative aspect-square bg-surface border border-line flex flex-col items-center justify-center p-4 transition-transform group-hover:scale-[1.01]">
-              {item.badge && (
-                <span className="absolute top-2 left-2 bg-bg border border-line text-ink px-1.5 py-0.5 text-[10px] uppercase tracking-wider font-medium">
-                  {item.badge}
-                </span>
-              )}
-              <span className="text-xs text-muted">Photo placeholder</span>
-            </div>
-            <div>
-              <p className="text-[13px] text-ink font-normal group-hover:text-accent transition-colors">
-                {item.name}
-              </p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[12px] font-medium text-ink">{item.price}</span>
-                {item.compare && (
-                  <span className="text-[11px] text-muted line-through">{item.compare}</span>
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Loading Skeleton */}
+      {isLoading && <ProductGridSkeleton count={8} />}
+
+      {/* Empty State */}
+      {!isLoading && !isError && products?.length === 0 && (
+        <div className="py-20 text-center space-y-3 border border-line/40 bg-surface/50 p-8">
+          <p className="text-xs sm:text-sm text-ink font-light">
+            No pieces in this category yet.
+          </p>
+          <button
+            type="button"
+            onClick={() => handleCategoryChange('All')}
+            className="text-xs uppercase tracking-wider text-accent underline underline-offset-4"
+          >
+            View all jewellery
+          </button>
+        </div>
+      )}
+
+      {/* Product Grid: 2 cols on mobile, 4 on desktop, 22px row gap, 16px col gap */}
+      {!isLoading && !isError && products && products.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-[22px]">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default Shop;
-
