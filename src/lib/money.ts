@@ -26,3 +26,4 @@ export const savingPercent = (price: Paise, compare: Paise | null): number => {
   if (!compare || compare <= price) return 0;
   return Math.round((1 - price / compare) * 100);
 };
+

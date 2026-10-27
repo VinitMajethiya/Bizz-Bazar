@@ -21,3 +21,4 @@ export const Ticker: React.FC<TickerProps> = ({
 };
 
 export default Ticker;
+

@@ -22,3 +22,4 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
 };
 
 export default ThemeToggle;
+

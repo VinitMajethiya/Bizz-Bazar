@@ -26,3 +26,4 @@ export const ShippingReturns: React.FC = () => {
 };
 
 export default ShippingReturns;
+

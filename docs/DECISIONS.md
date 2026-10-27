@@ -34,6 +34,12 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 010: Logo placeholder and typographic fallback
 2026-10-27. Swappable `<Logo />` component created with SVG placeholder at `src/assets/logo.svg` and serif typographic fallback matching brand aesthetic until official vector logo asset is supplied.
 
+## 011: Database types management
+2026-10-27. Schema typed hand-written in `src/lib/database.types.ts` reflecting migrations 001 to 007 with exact Row, Insert, Update interfaces and Postgres enums. Can be regenerated later using `supabase gen types typescript` once the CLI is linked to the remote project.
+
+## 012: Resilient seed pipeline
+2026-10-27. `npm run seed` operates idempotently and handles missing images gracefully with warnings rather than fatal errors, permitting database seeding before all final photography is supplied.
+
 ## Template
 ```
 ## NNN: Title

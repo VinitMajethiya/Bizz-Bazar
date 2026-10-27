@@ -70,3 +70,4 @@ export const AdminProducts: React.FC = () => {
 };
 
 export default AdminProducts;
+

@@ -28,3 +28,4 @@ export const Terms: React.FC = () => {
 };
 
 export default Terms;
+

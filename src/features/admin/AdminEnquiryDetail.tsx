@@ -71,3 +71,4 @@ export const AdminEnquiryDetail: React.FC = () => {
 };
 
 export default AdminEnquiryDetail;
+

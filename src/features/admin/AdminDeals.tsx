@@ -39,3 +39,4 @@ export const AdminDeals: React.FC = () => {
 };
 
 export default AdminDeals;
+
