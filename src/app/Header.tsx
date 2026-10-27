@@ -3,9 +3,12 @@ import { Link, NavLink } from 'react-router-dom';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useCartStore } from '@/features/cart/cartStore';
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { lines, openDrawer } = useCartStore();
+  const totalCount = lines.reduce((acc, l) => acc + l.qty, 0);
 
   return (
     <header className="sticky top-0 z-40 bg-bg/95 backdrop-blur-sm border-b border-line transition-colors">
@@ -65,14 +68,17 @@ export const Header: React.FC = () => {
 
           <button
             type="button"
-            aria-label="Shopping bag (0 items)"
+            aria-label={`Shopping bag (${totalCount} ${totalCount === 1 ? 'item' : 'items'})`}
             className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center p-2 text-ink hover:text-accent rounded-ui relative focus-visible:ring-1 focus-visible:ring-accent"
-            onClick={() => {
-              // Cart drawer will open in Phase 3
-            }}
+            onClick={openDrawer}
           >
             <ShoppingBag className="w-4 h-4 stroke-[1.5]" aria-hidden="true" />
-            <span className="sr-only">0 items in bag</span>
+            {totalCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-ink text-bg text-[10px] font-normal rounded-full flex items-center justify-center leading-none">
+                {totalCount}
+              </span>
+            )}
+            <span className="sr-only">{totalCount} items in bag</span>
           </button>
         </div>
       </div>

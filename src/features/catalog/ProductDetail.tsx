@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MessageCircle, Instagram, ShoppingBag, ZoomIn, X, Check } from 'lucide-react';
-import { useProduct, useRelatedProducts, useReviews } from '../../lib/hooks/useCatalog';
+import { useProduct, useRelatedProducts, useReviews, useSiteSettings } from '../../lib/hooks/useCatalog';
+import { useCartStore, type CartLine } from '../cart/cartStore';
+import { placeOrder, isOrderInProgress } from '../enquiries/placeOrder';
 import { ProductCard } from '../../components/ui/ProductCard';
 import { PriceTag } from '../../components/ui/PriceTag';
 import { Accordion } from '../../components/ui/Accordion';
@@ -18,12 +20,15 @@ export const ProductDetail: React.FC = () => {
     product?.category || '',
     product?.id || ''
   );
+  const { data: settings } = useSiteSettings();
+  const { addLine, openDrawer } = useCartStore();
 
   const [selectedMaterial, setSelectedMaterial] = useState<string>('');
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [isOrdering, setIsOrdering] = useState(false);
 
   // Sync default options when product loads
   useEffect(() => {
@@ -49,6 +54,48 @@ export const ProductDetail: React.FC = () => {
     );
     if (variantIndex !== -1) {
       setActiveImageIndex(variantIndex);
+    }
+  };
+
+  const handleAddToBag = () => {
+    if (isSoldOut || !product) return;
+    addLine(
+      {
+        productId: product.id,
+        options: {
+          ...(selectedMaterial ? { material: selectedMaterial } : {}),
+          ...(selectedSize ? { size: selectedSize } : {}),
+        },
+        qty: quantity,
+      },
+      product.stockQty
+    );
+    openDrawer();
+  };
+
+  const handleDirectOrder = async (channel: 'whatsapp' | 'instagram') => {
+    if (isSoldOut || !product || isOrdering || isOrderInProgress()) return;
+
+    setIsOrdering(true);
+    try {
+      const line: CartLine = {
+        productId: product.id,
+        options: {
+          ...(selectedMaterial ? { material: selectedMaterial } : {}),
+          ...(selectedSize ? { size: selectedSize } : {}),
+        },
+        qty: quantity,
+      };
+
+      await placeOrder({
+        channel,
+        lines: [line],
+        note: null,
+        settings,
+        isBagCheckout: false,
+      });
+    } finally {
+      setIsOrdering(false);
     }
   };
 
@@ -364,29 +411,32 @@ export const ProductDetail: React.FC = () => {
             {/* 1. Order on WhatsApp (Solid Ink) */}
             <button
               type="button"
-              disabled={isSoldOut}
+              disabled={isSoldOut || isOrdering}
+              onClick={() => handleDirectOrder('whatsapp')}
               aria-label={isSoldOut ? 'Sold out' : 'Order on WhatsApp'}
               className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-ink text-bg text-xs font-normal rounded-ui hover:bg-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:bg-ink disabled:cursor-not-allowed"
             >
               <MessageCircle className="w-4 h-4 stroke-[1.5]" />
-              {isSoldOut ? 'Sold out' : 'Order on WhatsApp'}
+              {isSoldOut ? 'Sold out' : isOrdering ? 'Preparing...' : 'Order on WhatsApp'}
             </button>
 
             {/* 2. Order on Instagram (Outlined) */}
             <button
               type="button"
-              disabled={isSoldOut}
+              disabled={isSoldOut || isOrdering}
+              onClick={() => handleDirectOrder('instagram')}
               aria-label={isSoldOut ? 'Sold out' : 'Order on Instagram'}
               className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-ink text-ink text-xs font-normal rounded-ui hover:border-accent hover:text-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:border-ink disabled:hover:text-ink disabled:cursor-not-allowed"
             >
               <Instagram className="w-4 h-4 stroke-[1.5]" />
-              {isSoldOut ? 'Sold out' : 'Order on Instagram'}
+              {isSoldOut ? 'Sold out' : isOrdering ? 'Preparing...' : 'Order on Instagram'}
             </button>
 
             {/* 3. Add to Bag (Outlined Surface) */}
             <button
               type="button"
               disabled={isSoldOut}
+              onClick={handleAddToBag}
               aria-label={isSoldOut ? 'Sold out' : 'Add to bag'}
               className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-line bg-surface text-ink text-xs font-normal rounded-ui hover:bg-line/60 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:cursor-not-allowed"
             >

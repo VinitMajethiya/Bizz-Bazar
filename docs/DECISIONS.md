@@ -40,6 +40,9 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 012: Resilient seed pipeline
 2026-10-27. `npm run seed` operates idempotently and handles missing images gracefully with warnings rather than fatal errors, permitting database seeding before all final photography is supplied.
 
+## 013: Decoupled modal and toast state for async order flows
+2026-10-27. Extracted `orderModalStore` and `toastStore` to lightweight standalone Zustand stores outside React rendering tree. This allows asynchronous functions like `placeOrder()` to trigger clipboard copies, modal alerts, or notification banners reliably without prop-drilling or component context dependencies.
+
 ## Template
 ```
 ## NNN: Title

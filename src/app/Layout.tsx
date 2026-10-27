@@ -3,6 +3,9 @@ import { Outlet } from 'react-router-dom';
 import { Ticker } from './Ticker';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { CartDrawer } from '../features/cart/CartDrawer';
+import { OrderModal } from '../features/enquiries/OrderModal';
+import { Toast } from '../components/ui/Toast';
 
 export const Layout: React.FC = () => {
   return (
@@ -13,9 +16,11 @@ export const Layout: React.FC = () => {
         <Outlet />
       </main>
       <Footer />
+      <CartDrawer />
+      <OrderModal />
+      <Toast />
     </div>
   );
 };
 
 export default Layout;
-
