@@ -1,0 +1,23 @@
+:root {
+  --bg: #fffdf9;           /* warm white, from the logo circle */
+  --surface: #f6f1ea;      /* tile and card backdrop */
+  --ink: #2a1f1e;          /* deep charcoal/brown */
+  --muted: #7d726f;        /* soft muted text */
+  --line: #ebe4dc;         /* subtle border lines */
+  --accent: #7a2e2a;       /* maroon from logo */
+  --danger: #b3261e;
+  --radius: 0px;           /* sharp corners on images & tiles */
+  --radius-ui: 2px;        /* inputs and buttons */
+}
+
+[data-theme="dark"] {
+  --bg: #171313;
+  --surface: #211b1a;
+  --ink: #f3ece6;
+  --muted: #a39a95;
+  --line: #322927;
+  --accent: #d9908a;
+  --danger: #ef5350;
+  --radius: 0px;
+  --radius-ui: 2px;
+}
