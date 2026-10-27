@@ -1,8 +1,37 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Shop } from './Shop';
+
+const { mockProducts } = vi.hoisted(() => ({
+  mockProducts: [
+    {
+      id: 'p-1',
+      slug: 'lilac-twist-hoops',
+      name: 'Lilac Twist Hoops',
+      category: 'Earrings',
+      description: 'Chic twist hoops featuring delicate lilac accents.',
+      pricePaise: 49900,
+      compareAtPricePaise: 69900,
+      stockStatus: 'in_stock' as const,
+      stockQty: 25,
+      badge: 'New drop',
+      options: { materials: ['Gold', 'Rose Gold'], sizes: [] },
+      specs: {},
+      isFeatured: true,
+      isArchived: false,
+      sortOrder: 1,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+      images: [],
+    },
+  ],
+}));
+
+vi.mock('../../lib/api/products', () => ({
+  fetchProducts: vi.fn().mockImplementation(() => Promise.resolve(mockProducts)),
+}));
 
 function renderWithProviders(ui: React.ReactElement, initialEntries = ['/shop']) {
   const queryClient = new QueryClient({
@@ -39,10 +68,9 @@ describe('Shop Page', () => {
     expect(select.value).toBe('featured');
   });
 
-  it('renders product cards from catalog', async () => {
+  it('renders product cards from mocked supabase response', async () => {
     renderWithProviders(<Shop />);
 
-    // Since fallback catalogue loads synchronously/instantly, we can find items
     const productItem = await screen.findByText('Lilac Twist Hoops');
     expect(productItem).toBeInTheDocument();
   });

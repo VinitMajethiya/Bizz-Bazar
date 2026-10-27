@@ -68,3 +68,4 @@ export function useDropAlertMutation() {
     mutationFn: (contact: string) => submitDropAlert(contact),
   });
 }
+

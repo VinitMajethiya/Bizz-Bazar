@@ -38,3 +38,4 @@ describe('Accordion Component', () => {
     expect(screen.getByText('Keep dry and store in box')).toBeInTheDocument();
   });
 });
+

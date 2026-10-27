@@ -78,3 +78,4 @@ export interface ReviewStats {
   totalReviews: number;
   reviews: Review[];
 }
+

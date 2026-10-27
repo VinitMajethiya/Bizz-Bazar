@@ -66,9 +66,9 @@ export const ProductDetail: React.FC = () => {
         <div>
           <Link
             to="/shop"
-            className="text-xs uppercase tracking-widest font-medium text-accent underline underline-offset-4"
+            className="text-xs font-normal text-accent underline underline-offset-4"
           >
-            &larr; Back to the catalogue
+            Back to the catalogue
           </Link>
         </div>
       </div>
@@ -124,7 +124,7 @@ export const ProductDetail: React.FC = () => {
       title: 'Packaging and gifting',
       content: (
         <p>
-          Every piece arrives in a protective gift box with an authenticity and care card. Complimentary handwritten gift notes can be added at checkout.
+          Every piece comes in a gift box with a care card. Add a gift note in your bag.
         </p>
       ),
     },
@@ -224,7 +224,7 @@ export const ProductDetail: React.FC = () => {
             <div className="flex items-center justify-between gap-4">
               <Link
                 to={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-xs uppercase tracking-widest text-muted hover:text-accent font-medium transition-colors"
+                className="text-xs text-muted hover:text-accent font-normal transition-colors"
               >
                 {product.category}
               </Link>
@@ -251,15 +251,15 @@ export const ProductDetail: React.FC = () => {
             {/* Stock indicator */}
             <div className="pt-1">
               {isSoldOut ? (
-                <span className="text-xs font-medium text-muted uppercase tracking-wider inline-flex items-center gap-1.5">
+                <span className="text-xs font-normal text-muted inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-muted" /> Sold out &bull; Back soon
                 </span>
               ) : isLowStock ? (
-                <span className="text-xs font-medium text-danger inline-flex items-center gap-1.5">
+                <span className="text-xs font-normal text-danger inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-danger animate-pulse" /> Only a few left in stock
                 </span>
               ) : (
-                <span className="text-xs font-medium text-ink inline-flex items-center gap-1.5">
+                <span className="text-xs font-normal text-ink inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-green-600" /> In stock &bull; Ready to dispatch
                 </span>
               )}
@@ -276,7 +276,7 @@ export const ProductDetail: React.FC = () => {
           {/* Material Selector Chips */}
           {product.options.materials.length > 0 && (
             <div className="space-y-2">
-              <label className="text-xs font-medium text-ink uppercase tracking-wider block">
+              <label className="text-xs font-normal text-ink block">
                 Material: <span className="font-light text-muted">{selectedMaterial}</span>
               </label>
               <div className="flex flex-wrap gap-2">
@@ -305,7 +305,7 @@ export const ProductDetail: React.FC = () => {
           {/* Size Selector Chips */}
           {product.options.sizes.length > 0 && (
             <div className="space-y-2">
-              <label className="text-xs font-medium text-ink uppercase tracking-wider block">
+              <label className="text-xs font-normal text-ink block">
                 Size: <span className="font-light text-muted">{selectedSize}</span>
               </label>
               <div className="flex flex-wrap gap-2">
@@ -333,7 +333,7 @@ export const ProductDetail: React.FC = () => {
 
           {/* Quantity Selector */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-ink uppercase tracking-wider block">
+            <label className="text-xs font-normal text-ink block">
               Quantity
             </label>
             <div className="inline-flex items-center border border-line rounded-ui bg-surface">
@@ -366,7 +366,7 @@ export const ProductDetail: React.FC = () => {
               type="button"
               disabled={isSoldOut}
               aria-label={isSoldOut ? 'Sold out' : 'Order on WhatsApp'}
-              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-ink text-bg text-xs uppercase tracking-widest font-medium rounded-ui hover:bg-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:bg-ink disabled:cursor-not-allowed"
+              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-ink text-bg text-xs font-normal rounded-ui hover:bg-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:bg-ink disabled:cursor-not-allowed"
             >
               <MessageCircle className="w-4 h-4 stroke-[1.5]" />
               {isSoldOut ? 'Sold out' : 'Order on WhatsApp'}
@@ -377,7 +377,7 @@ export const ProductDetail: React.FC = () => {
               type="button"
               disabled={isSoldOut}
               aria-label={isSoldOut ? 'Sold out' : 'Order on Instagram'}
-              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-ink text-ink text-xs uppercase tracking-widest font-medium rounded-ui hover:border-accent hover:text-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:border-ink disabled:hover:text-ink disabled:cursor-not-allowed"
+              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-ink text-ink text-xs font-normal rounded-ui hover:border-accent hover:text-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:hover:border-ink disabled:hover:text-ink disabled:cursor-not-allowed"
             >
               <Instagram className="w-4 h-4 stroke-[1.5]" />
               {isSoldOut ? 'Sold out' : 'Order on Instagram'}
@@ -388,7 +388,7 @@ export const ProductDetail: React.FC = () => {
               type="button"
               disabled={isSoldOut}
               aria-label={isSoldOut ? 'Sold out' : 'Add to bag'}
-              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-line bg-surface text-ink text-xs uppercase tracking-widest font-medium rounded-ui hover:bg-line/60 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 border border-line bg-surface text-ink text-xs font-normal rounded-ui hover:bg-line/60 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
               {isSoldOut ? 'Sold out' : 'Add to bag'}

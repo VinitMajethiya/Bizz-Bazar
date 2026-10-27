@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Col */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
+            <h3 className="text-xs font-medium text-ink">
               {brandName}
             </h3>
             <p className="text-xs text-muted leading-relaxed max-w-xs font-light">
@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
 
           {/* Shop */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
+            <h3 className="text-xs font-medium text-ink">
               Catalogue
             </h3>
             <ul className="space-y-2 text-xs text-muted font-light">
@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
 
           {/* About & Contact */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
+            <h3 className="text-xs font-medium text-ink">
               About
             </h3>
             <ul className="space-y-2 text-xs text-muted font-light">
@@ -101,7 +101,7 @@ export const Footer: React.FC = () => {
 
           {/* Legal & Admin */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase tracking-widest font-medium text-ink">
+            <h3 className="text-xs font-medium text-ink">
               Legal
             </h3>
             <ul className="space-y-2 text-xs text-muted font-light">

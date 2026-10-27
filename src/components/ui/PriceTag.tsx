@@ -63,3 +63,4 @@ export const PriceTag: React.FC<PriceTagProps> = ({
 };
 
 export default PriceTag;
+

@@ -10,6 +10,11 @@ export interface ProductCardProps {
   className?: string;
 }
 
+function toSentenceCase(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '' }) => {
   const heroImage = product.images.find((img) => img.isHero) || product.images[0];
   const isSoldOut = product.stockStatus === 'sold_out';
@@ -19,18 +24,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
   let badgeVariant: 'default' | 'sale' | 'sold_out' | 'low_stock' = 'default';
 
   if (isSoldOut) {
-    badgeText = 'Sold Out';
+    badgeText = 'Sold out';
     badgeVariant = 'sold_out';
   } else if (product.stockStatus === 'low_stock') {
-    badgeText = badgeText || 'Low Stock';
+    badgeText = badgeText ? toSentenceCase(badgeText) : 'Low stock';
     badgeVariant = 'low_stock';
   } else if (
     product.compareAtPricePaise &&
     product.compareAtPricePaise > product.pricePaise &&
-    (!badgeText || badgeText === 'Sale')
+    (!badgeText || badgeText.toLowerCase() === 'sale')
   ) {
-    badgeText = badgeText || 'Sale';
+    badgeText = 'Sale';
     badgeVariant = 'sale';
+  } else if (badgeText) {
+    badgeText = toSentenceCase(badgeText);
   }
 
   return (
@@ -81,3 +88,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
 };
 
 export default ProductCard;
+

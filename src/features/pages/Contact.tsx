@@ -13,9 +13,8 @@ export const Contact: React.FC = () => {
     <div className="max-w-site mx-auto px-5 md:px-8 py-12 md:py-16">
       <div className="max-w-3xl mx-auto space-y-10">
         <header className="space-y-2 border-b border-line pb-6">
-          <span className="text-xs uppercase tracking-[0.2em] text-muted">Get In Touch</span>
           <h1 className="text-3xl font-light text-ink">Contact Us</h1>
-          <p className="text-xs text-muted">
+          <p className="text-xs text-muted font-light">
             Have a question about a piece or your order? Message us directly for the fastest response.
           </p>
         </header>
@@ -23,7 +22,7 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Quick Channels */}
           <div className="space-y-4">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-ink">
+            <h2 className="text-xs font-medium text-ink">
               Direct Messaging
             </h2>
 
@@ -67,7 +66,7 @@ export const Contact: React.FC = () => {
 
           {/* Form */}
           <div className="space-y-4">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-ink">
+            <h2 className="text-xs font-medium text-ink">
               Send a Note
             </h2>
 
@@ -125,7 +124,7 @@ export const Contact: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full min-h-[40px] bg-ink text-bg text-xs uppercase tracking-wider font-medium rounded-ui hover:bg-accent transition-colors"
+                  className="w-full min-h-[40px] bg-ink text-bg text-xs font-normal rounded-ui hover:bg-accent transition-colors"
                 >
                   Send Message
                 </button>

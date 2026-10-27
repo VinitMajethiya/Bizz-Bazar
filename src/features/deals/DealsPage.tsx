@@ -13,7 +13,7 @@ export const DealsPage: React.FC = () => {
         {/* Deal Card Placeholder */}
         <div className="border border-line bg-surface p-6 rounded-ui space-y-4">
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-accent font-medium bg-bg px-2.5 py-1 rounded-ui border border-line">
+            <span className="inline-flex items-center gap-1.5 text-xs text-accent font-medium bg-bg px-2.5 py-1 rounded-ui border border-line">
               <Tag className="w-3.5 h-3.5" /> 10% Off
             </span>
             <span className="text-[11px] text-muted">Limited time offer</span>
@@ -37,7 +37,7 @@ export const DealsPage: React.FC = () => {
         {/* Bundle Card Placeholder */}
         <div className="border border-line bg-surface p-6 rounded-ui space-y-4">
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-accent font-medium bg-bg px-2.5 py-1 rounded-ui border border-line">
+            <span className="inline-flex items-center gap-1.5 text-xs text-accent font-medium bg-bg px-2.5 py-1 rounded-ui border border-line">
               <Sparkles className="w-3.5 h-3.5" /> Curated Bundle
             </span>
             <span className="text-[11px] text-muted">Bestseller Set</span>

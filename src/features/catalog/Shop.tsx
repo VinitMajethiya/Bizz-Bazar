@@ -105,7 +105,7 @@ export const Shop: React.FC = () => {
           <button
             type="button"
             onClick={() => refetch()}
-            className="px-4 py-2 border border-line text-xs uppercase tracking-wider rounded-ui hover:border-ink transition-colors"
+            className="px-4 py-2 border border-line text-xs font-normal rounded-ui hover:border-ink transition-colors"
           >
             Retry
           </button>
@@ -124,7 +124,7 @@ export const Shop: React.FC = () => {
           <button
             type="button"
             onClick={() => handleCategoryChange('All')}
-            className="text-xs uppercase tracking-wider text-accent underline underline-offset-4"
+            className="text-xs text-accent underline underline-offset-4 font-normal"
           >
             View all jewellery
           </button>

@@ -2,8 +2,8 @@
 
 Short log of choices that are costly to reverse. Newest at the bottom. Format: date, decision, why, alternatives, consequences.
 
-## 001: Chat ordering instead of payments
-Customers order through WhatsApp or Instagram DM; payment is arranged in chat. Matches how the brand sells today ("DM to order"). Alternative: a payment gateway (Razorpay). Consequence: no automatic payment status; the owner confirms by hand and the order pipeline is manual.
+## 001: Chat ordering instead of online payments
+Customers order through WhatsApp or Instagram DM; payment is arranged in chat. Matches how the brand sells today ("DM to order"). Alternative: online payment gateway. Consequence: no automatic payment status; the owner confirms by hand and the order pipeline is manual.
 
 ## 002: Save the enquiry before opening the chat
 Every order tap writes an enquiry through `create_enquiry` first. Gives the owner the lead even if the shopper never sends the message. Consequence: if the database is down the order button shows an error instead of opening the chat.

@@ -45,7 +45,7 @@ describe('ProductCard Component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('New Drop')).toBeInTheDocument();
+    expect(screen.getByText('New drop')).toBeInTheDocument();
   });
 
   it('renders sold out badge and state when stockStatus is sold_out', () => {
@@ -62,6 +62,7 @@ describe('ProductCard Component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Sold Out')).toBeInTheDocument();
+    expect(screen.getByText('Sold out')).toBeInTheDocument();
   });
 });
+

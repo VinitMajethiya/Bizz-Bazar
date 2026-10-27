@@ -14,7 +14,12 @@ const CATEGORIES_MOSAIC = [
 
 export const Home: React.FC = () => {
   const { data: settings } = useSiteSettings();
-  const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts(4);
+  const {
+    data: featuredProducts,
+    isLoading: featuredLoading,
+    isError: featuredError,
+    refetch: refetchFeatured,
+  } = useFeaturedProducts(4);
   const { data: reviewData } = useReviews();
 
   // Drop alert state
@@ -49,11 +54,10 @@ export const Home: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* 1. Hero Section */}
-      <section className="relative w-full border-b border-line bg-surface">
+      {/* 1. Hero Section (DESIGN.md: on mobile image sits on top and text below; on desktop headline bottom-left over image) */}
+      <section className="relative w-full border-b border-line bg-surface overflow-hidden">
         <div className="max-w-site mx-auto">
-          {/* Mobile: Image on top, text below. Desktop: Full photo with text overlaid bottom-left */}
-          <div className="flex flex-col md:relative md:min-h-[520px] lg:min-h-[600px] justify-end">
+          <div className="flex flex-col md:relative md:min-h-[520px] lg:min-h-[600px] md:justify-end">
             {/* Hero Photograph / Visual */}
             <div className="w-full aspect-[4/3] md:aspect-auto md:absolute md:inset-0 bg-surface overflow-hidden">
               {settings?.hero_image_url ? (
@@ -67,17 +71,17 @@ export const Home: React.FC = () => {
                   <span className="text-3xl md:text-5xl font-light text-muted/40 font-serif mb-2">
                     By Raya.co
                   </span>
-                  <p className="text-xs text-muted uppercase tracking-[0.25em]">
+                  <p className="text-xs text-muted font-light">
                     Everyday luxury, without the luxury price
                   </p>
                 </div>
               )}
               {/* Desktop dark scrim for readability */}
-              <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
             </div>
 
-            {/* Hero Copy */}
-            <div className="px-5 py-8 md:p-12 md:relative md:z-10 max-w-xl">
+            {/* Hero Copy: sits below on mobile, anchored bottom-left on desktop */}
+            <div className="bg-bg md:bg-transparent px-5 py-8 md:p-12 md:relative md:z-10 max-w-xl">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.08] text-ink md:text-white mb-3">
                 {settings?.hero_headline || 'Effortless elegance for every occasion'}
               </h1>
@@ -87,9 +91,9 @@ export const Home: React.FC = () => {
               <div>
                 <Link
                   to="/shop"
-                  className="text-xs uppercase tracking-widest font-medium text-ink md:text-white hover:text-accent underline underline-offset-8 transition-colors"
+                  className="text-xs font-normal text-ink md:text-white hover:text-accent underline underline-offset-4 transition-colors"
                 >
-                  Go to the catalogue &rarr;
+                  Go to the catalogue
                 </Link>
               </div>
             </div>
@@ -103,7 +107,7 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {guarantees.map((item, idx) => (
               <div key={idx} className="space-y-1">
-                <h3 className="text-xs font-medium text-ink uppercase tracking-wider">
+                <h3 className="text-xs font-medium text-ink">
                   {item.title}
                 </h3>
                 <p className="text-[12px] text-muted leading-relaxed font-light">
@@ -133,11 +137,24 @@ export const Home: React.FC = () => {
             </Link>
           </div>
 
-          {featuredLoading ? (
-            <ProductGridSkeleton count={4} />
-          ) : (
+          {featuredLoading && <ProductGridSkeleton count={4} />}
+
+          {featuredError && (
+            <div className="py-10 text-center space-y-2 border border-line/40 bg-surface/30 p-6">
+              <p className="text-xs text-danger">We couldn’t load bestsellers. Check your connection.</p>
+              <button
+                type="button"
+                onClick={() => refetchFeatured()}
+                className="text-xs underline underline-offset-4 text-ink hover:text-accent"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!featuredLoading && !featuredError && featuredProducts && featuredProducts.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6">
-              {featuredProducts?.map((product) => (
+              {featuredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -170,8 +187,8 @@ export const Home: React.FC = () => {
                   </span>
                 </div>
                 <div className="relative z-10">
-                  <span className="text-xs uppercase tracking-widest font-medium text-ink group-hover:text-accent transition-colors">
-                    {cat.name} &rarr;
+                  <span className="text-xs font-medium text-ink group-hover:text-accent transition-colors">
+                    {cat.name}
                   </span>
                 </div>
               </Link>
@@ -193,9 +210,6 @@ export const Home: React.FC = () => {
               />
             </div>
             <div className="space-y-4 max-w-lg">
-              <span className="text-xs uppercase tracking-[0.2em] text-muted font-medium">
-                Our Story
-              </span>
               <h2 className="text-2xl font-light text-ink leading-snug">
                 Everyday luxury, without the luxury price
               </h2>
@@ -206,9 +220,9 @@ export const Home: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to="/our-story"
-                  className="text-xs uppercase tracking-widest font-medium text-ink hover:text-accent underline underline-offset-4 transition-colors"
+                  className="text-xs font-normal text-ink hover:text-accent underline underline-offset-4 transition-colors"
                 >
-                  Read our story &rarr;
+                  Read our story
                 </Link>
               </div>
             </div>
@@ -273,7 +287,7 @@ export const Home: React.FC = () => {
                 <button
                   type="submit"
                   disabled={dropAlertMutation.isPending}
-                  className="px-5 py-2.5 bg-ink text-bg text-xs uppercase tracking-wider font-medium hover:bg-accent transition-colors rounded-ui focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-50"
+                  className="px-5 py-2.5 bg-ink text-bg text-xs font-normal hover:bg-accent transition-colors rounded-ui focus:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-50"
                 >
                   {dropAlertMutation.isPending ? 'Joining...' : 'Notify me'}
                 </button>
@@ -290,14 +304,14 @@ export const Home: React.FC = () => {
       <section className="py-10 sm:py-14 bg-surface text-center border-b border-line">
         <div className="max-w-site mx-auto px-5 md:px-8">
           <div className="mb-6">
-            <h2 className="text-sm uppercase tracking-widest font-medium text-ink">
+            <h2 className="text-sm font-medium text-ink">
               On Instagram
             </h2>
             <a
               href="https://instagram.com/by.raya.co"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-accent hover:underline mt-1 inline-block"
+              className="text-xs text-accent hover:underline mt-1 inline-block font-light"
             >
               @by.raya.co
             </a>

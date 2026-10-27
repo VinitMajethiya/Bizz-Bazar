@@ -1,6 +1,5 @@
-import { supabase, isSupabaseConfigured } from '../supabase';
+import { supabase } from '../supabase';
 import type { Product, ProductImage } from '../types';
-import { FALLBACK_PRODUCTS } from '../catalogData';
 
 interface RawProductImage {
   id: string;
@@ -37,7 +36,7 @@ interface RawProduct {
   images?: RawProductImage[];
 }
 
-function mapProduct(raw: RawProduct): Product {
+export function mapProduct(raw: RawProduct): Product {
   const images: ProductImage[] = (raw.images || [])
     .sort((a, b) => {
       if (a.is_hero !== b.is_hero) return a.is_hero ? -1 : 1;
@@ -83,138 +82,79 @@ export interface FetchProductsOptions {
 }
 
 export async function fetchProducts(options?: FetchProductsOptions): Promise<Product[]> {
-  if (!isSupabaseConfigured) {
-    return filterAndSortFallbackProducts(options);
-  }
-
-  try {
-    let query = supabase
-      .from('products')
-      .select('*, images:product_images(*)')
-      .eq('is_archived', false);
-
-    if (options?.category && options.category !== 'All') {
-      query = query.eq('category', options.category);
-    }
-
-    // Apply sorting
-    switch (options?.sort) {
-      case 'price-asc':
-        query = query.order('price_paise', { ascending: true });
-        break;
-      case 'price-desc':
-        query = query.order('price_paise', { ascending: false });
-        break;
-      case 'newest':
-        query = query.order('created_at', { ascending: false });
-        break;
-      case 'featured':
-      default:
-        query = query
-          .order('is_featured', { ascending: false })
-          .order('sort_order', { ascending: true })
-          .order('created_at', { ascending: false });
-        break;
-    }
-
-    if (options?.limit) {
-      query = query.limit(options.limit);
-    }
-
-    const { data, error } = await query;
-
-    if (error || !data || data.length === 0) {
-      // Fallback for offline or pre-migrated environment
-      return filterAndSortFallbackProducts(options);
-    }
-
-    return (data as unknown as RawProduct[]).map(mapProduct);
-  } catch {
-    return filterAndSortFallbackProducts(options);
-  }
-}
-
-function filterAndSortFallbackProducts(options?: FetchProductsOptions): Product[] {
-  let list = [...FALLBACK_PRODUCTS];
+  let query = supabase
+    .from('products')
+    .select('*, images:product_images(*)')
+    .eq('is_archived', false);
 
   if (options?.category && options.category !== 'All') {
-    list = list.filter((p) => p.category.toLowerCase() === options.category?.toLowerCase());
+    query = query.eq('category', options.category);
   }
 
+  // Apply sorting
   switch (options?.sort) {
     case 'price-asc':
-      list.sort((a, b) => a.pricePaise - b.pricePaise);
+      query = query.order('price_paise', { ascending: true });
       break;
     case 'price-desc':
-      list.sort((a, b) => b.pricePaise - a.pricePaise);
+      query = query.order('price_paise', { ascending: false });
       break;
     case 'newest':
-      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      query = query.order('created_at', { ascending: false });
       break;
     case 'featured':
     default:
-      list.sort((a, b) => {
-        if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1;
-        return a.sortOrder - b.sortOrder;
-      });
+      query = query
+        .order('is_featured', { ascending: false })
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false });
       break;
   }
 
   if (options?.limit) {
-    list = list.slice(0, options.limit);
+    query = query.limit(options.limit);
   }
 
-  return list;
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(error.message || 'Failed to fetch products');
+  }
+
+  return (data as unknown as RawProduct[]).map(mapProduct);
 }
 
 export async function fetchFeaturedProducts(limit = 4): Promise<Product[]> {
-  if (!isSupabaseConfigured) {
-    return FALLBACK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, images:product_images(*)')
+    .eq('is_archived', false)
+    .eq('is_featured', true)
+    .order('sort_order', { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(error.message || 'Failed to fetch featured products');
   }
 
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, images:product_images(*)')
-      .eq('is_archived', false)
-      .eq('is_featured', true)
-      .order('sort_order', { ascending: true })
-      .limit(limit);
-
-    if (error || !data || data.length === 0) {
-      return FALLBACK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
-    }
-
-    return (data as unknown as RawProduct[]).map(mapProduct);
-  } catch {
-    return FALLBACK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
-  }
+  return (data as unknown as RawProduct[]).map(mapProduct);
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
-  if (!isSupabaseConfigured) {
-    const fallback = FALLBACK_PRODUCTS.find((p) => p.slug === slug);
-    return fallback || null;
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, images:product_images(*)')
+    .eq('slug', slug)
+    .eq('is_archived', false)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message || 'Failed to fetch product');
   }
 
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, images:product_images(*)')
-      .eq('slug', slug)
-      .eq('is_archived', false)
-      .single();
+  if (!data) return null;
 
-    if (error || !data) {
-      const fallback = FALLBACK_PRODUCTS.find((p) => p.slug === slug);
-      return fallback || null;
-    }
-
-    return mapProduct(data as unknown as RawProduct);
-  } catch {
-    const fallback = FALLBACK_PRODUCTS.find((p) => p.slug === slug);
-    return fallback || null;
-  }
+  return mapProduct(data as unknown as RawProduct);
 }
 
 export async function fetchRelatedProducts(
@@ -222,32 +162,18 @@ export async function fetchRelatedProducts(
   currentProductId: string,
   limit = 4
 ): Promise<Product[]> {
-  if (!isSupabaseConfigured) {
-    return FALLBACK_PRODUCTS.filter(
-      (p) => p.category === category && p.id !== currentProductId
-    ).slice(0, limit);
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, images:product_images(*)')
+    .eq('category', category)
+    .eq('is_archived', false)
+    .neq('id', currentProductId)
+    .order('sort_order', { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(error.message || 'Failed to fetch related products');
   }
 
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, images:product_images(*)')
-      .eq('category', category)
-      .eq('is_archived', false)
-      .neq('id', currentProductId)
-      .order('sort_order', { ascending: true })
-      .limit(limit);
-
-    if (error || !data || data.length === 0) {
-      return FALLBACK_PRODUCTS.filter(
-        (p) => p.category === category && p.id !== currentProductId
-      ).slice(0, limit);
-    }
-
-    return (data as unknown as RawProduct[]).map(mapProduct);
-  } catch {
-    return FALLBACK_PRODUCTS.filter(
-      (p) => p.category === category && p.id !== currentProductId
-    ).slice(0, limit);
-  }
+  return (data as unknown as RawProduct[]).map(mapProduct);
 }

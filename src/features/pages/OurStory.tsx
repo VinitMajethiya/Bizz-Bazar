@@ -5,7 +5,6 @@ export const OurStory: React.FC = () => {
     <article className="max-w-site mx-auto px-5 md:px-8 py-12 md:py-16">
       <div className="max-w-2xl mx-auto space-y-6">
         <header className="space-y-2 border-b border-line pb-6">
-          <span className="text-xs uppercase tracking-[0.2em] text-muted">About The Brand</span>
           <h1 className="text-3xl font-light text-ink">Our Story</h1>
         </header>
 

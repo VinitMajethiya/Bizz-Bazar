@@ -50,7 +50,7 @@ export const Accordion: React.FC<AccordionProps> = ({
                 aria-controls={panelId}
                 aria-expanded={isOpen}
                 onClick={() => toggle(item.id)}
-                className="w-full py-3.5 flex items-center justify-between text-left text-xs uppercase tracking-wider font-medium text-ink hover:text-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-none"
+                className="w-full py-3.5 flex items-center justify-between text-left text-xs font-normal text-ink hover:text-accent transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-none"
               >
                 <span>{item.title}</span>
                 <span className="text-muted ml-4 flex-shrink-0" aria-hidden="true">
@@ -81,3 +81,4 @@ export const Accordion: React.FC<AccordionProps> = ({
 };
 
 export default Accordion;
+
