@@ -49,3 +49,4 @@ begin
 end $$;
 
 grant execute on function create_enquiry(jsonb, chat_channel, text, text) to anon, authenticated;
+

@@ -36,3 +36,4 @@ create table contact_messages (
   message text not null check (char_length(message) <= 2000),
   created_at timestamptz not null default now()
 );
+

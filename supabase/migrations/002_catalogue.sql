@@ -30,3 +30,4 @@ create table product_images (
   variant_key text
 );
 create unique index one_hero_per_product on product_images (product_id) where is_hero;
+

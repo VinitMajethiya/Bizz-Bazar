@@ -6,3 +6,4 @@ create policy "public read images" on storage.objects for select using (bucket_i
 create policy "admin upload images" on storage.objects for insert with check (bucket_id = 'product-images' and is_admin());
 create policy "admin update images" on storage.objects for update using (bucket_id = 'product-images' and is_admin());
 create policy "admin delete images" on storage.objects for delete using (bucket_id = 'product-images' and is_admin());
+

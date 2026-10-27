@@ -43,3 +43,4 @@ create policy "admin leads delete" on newsletter_leads for delete using (is_admi
 create policy "send contact"       on contact_messages for insert with check (true);
 create policy "admin messages"     on contact_messages for select using (is_admin());
 create policy "admin messages del" on contact_messages for delete using (is_admin());
+
