@@ -58,7 +58,7 @@ export const AdminDealsPlaceholder: React.FC = () => (
   <AdminPlaceholder
     title="Deals & Discounts"
     phase="Phase 6"
-    description="Promotions engine for sitewide percentage sales, fixed amount coupons, and buy-X-get-Y bundles."
+    description="Promotions engine for sitewide percentage sales and flat amount coupon codes."
   />
 );
 

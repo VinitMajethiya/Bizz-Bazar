@@ -109,7 +109,8 @@ export const AdminContent: React.FC = () => {
           <label className="block text-ink font-medium">Select Page to Edit</label>
           <select className="bg-bg border border-line rounded-ui px-3 py-2 text-xs text-ink w-full max-w-xs focus:outline-none focus:ring-1 focus:ring-accent">
             <option value="our-story">Our Story (/our-story)</option>
-            <option value="shipping-returns">Shipping &amp; Returns (/shipping-returns)</option>
+            <option value="how-to-order">How to Order (/how-to-order)</option>
+            <option value="contact">Contact (/contact)</option>
             <option value="privacy">Privacy Policy (/privacy)</option>
             <option value="terms">Terms of Service (/terms)</option>
           </select>
