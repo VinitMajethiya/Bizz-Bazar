@@ -11,10 +11,12 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "seed": "tsx supabase/seed/seed.ts",
     "verify:db": "tsx supabase/seed/verify.ts",
+    "verify:admin": "tsx supabase/seed/verify-admin.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@hookform/resolvers": "^6.0.1",
     "@supabase/supabase-js": "^2.47.10",
     "@tanstack/react-query": "^5.62.7",
     "clsx": "^2.1.1",
@@ -22,6 +24,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.91.0",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^2.5.5",
     "zod": "^4.6.7",

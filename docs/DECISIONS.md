@@ -43,6 +43,9 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 013: Decoupled modal and toast state for async order flows
 2026-10-27. Extracted `orderModalStore` and `toastStore` to lightweight standalone Zustand stores outside React rendering tree. This allows asynchronous functions like `placeOrder()` to trigger clipboard copies, modal alerts, or notification banners reliably without prop-drilling or component context dependencies.
 
+## 014: Browser-side image resizing and WebP transcoding
+2026-10-28. Image uploads are resized in the browser via HTMLCanvasElement to a maximum long edge of 1600px and transcoded to WebP (with JPEG fallback) prior to Supabase Storage upload. Why: guarantees fast upload times on mobile network connections, prevents storage quota bloat, and provides uniform high-DPI imagery across storefront viewports.
+
 ## Template
 ```
 ## NNN: Title

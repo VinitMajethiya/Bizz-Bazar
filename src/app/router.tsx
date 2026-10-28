@@ -13,16 +13,35 @@ import ShippingReturns from '@/features/pages/ShippingReturns';
 import NotFound from '@/features/pages/NotFound';
 
 // Lazy-loaded admin routes so shoppers never download admin code
+const AdminGuard = lazy(() => import('@/features/admin/AdminGuard'));
 const AdminLayout = lazy(() => import('@/features/admin/AdminLayout'));
 const AdminLogin = lazy(() => import('@/features/admin/AdminLogin'));
 const AdminOverview = lazy(() => import('@/features/admin/AdminOverview'));
 const AdminProducts = lazy(() => import('@/features/admin/AdminProducts'));
 const AdminProductForm = lazy(() => import('@/features/admin/AdminProductForm'));
-const AdminDeals = lazy(() => import('@/features/admin/AdminDeals'));
-const AdminEnquiries = lazy(() => import('@/features/admin/AdminEnquiries'));
-const AdminEnquiryDetail = lazy(() => import('@/features/admin/AdminEnquiryDetail'));
-const AdminReviews = lazy(() => import('@/features/admin/AdminReviews'));
-const AdminContent = lazy(() => import('@/features/admin/AdminContent'));
+const AdminMore = lazy(() => import('@/features/admin/AdminMore'));
+
+// Placeholders for subsequent phases
+const AdminEnquiries = lazy(() =>
+  import('@/features/admin/AdminPlaceholders').then((m) => ({
+    default: m.AdminEnquiriesPlaceholder,
+  }))
+);
+const AdminReviews = lazy(() =>
+  import('@/features/admin/AdminPlaceholders').then((m) => ({
+    default: m.AdminReviewsPlaceholder,
+  }))
+);
+const AdminDeals = lazy(() =>
+  import('@/features/admin/AdminPlaceholders').then((m) => ({
+    default: m.AdminDealsPlaceholder,
+  }))
+);
+const AdminContent = lazy(() =>
+  import('@/features/admin/AdminPlaceholders').then((m) => ({
+    default: m.AdminContentPlaceholder,
+  }))
+);
 
 const adminFallback = (
   <div className="min-h-screen bg-bg flex items-center justify-center p-8 text-xs text-muted">
@@ -63,7 +82,9 @@ export const router = createBrowserRouter([
     path: '/admin',
     element: (
       <Suspense fallback={adminFallback}>
-        <AdminLayout />
+        <AdminGuard>
+          <AdminLayout />
+        </AdminGuard>
       </Suspense>
     ),
     children: [
@@ -73,9 +94,10 @@ export const router = createBrowserRouter([
       { path: 'products/:id', element: <AdminProductForm /> },
       { path: 'deals', element: <AdminDeals /> },
       { path: 'enquiries', element: <AdminEnquiries /> },
-      { path: 'enquiries/:id', element: <AdminEnquiryDetail /> },
+      { path: 'enquiries/:id', element: <AdminEnquiries /> },
       { path: 'reviews', element: <AdminReviews /> },
       { path: 'content', element: <AdminContent /> },
+      { path: 'more', element: <AdminMore /> },
     ],
   },
 ]);
