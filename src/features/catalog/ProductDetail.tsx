@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MessageCircle, Instagram, ShoppingBag, ZoomIn, X, Check } from 'lucide-react';
-import { useProduct, useRelatedProducts, useReviews, useSiteSettings } from '../../lib/hooks/useCatalog';
+import { MessageCircle, Instagram, ShoppingBag, ZoomIn, X } from 'lucide-react';
+import { useProduct, useRelatedProducts, useSiteSettings } from '../../lib/hooks/useCatalog';
+import { useProductReviewStats } from '../../lib/hooks/useReviews';
 import { useCartStore, type CartLine } from '../cart/cartStore';
 import { placeOrder, isOrderInProgress } from '../enquiries/placeOrder';
 import { ProductCard } from '../../components/ui/ProductCard';
@@ -10,12 +11,13 @@ import { Accordion } from '../../components/ui/Accordion';
 import { StarRating } from '../../components/ui/StarRating';
 import { ImageWithFallback } from '../../components/ui/ImageWithFallback';
 import { ProductDetailSkeleton } from '../../components/ui/Skeleton';
+import { ProductReviewsSection } from '../reviews/ProductReviewsSection';
 
 export const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
   const { data: product, isLoading, isError } = useProduct(slug);
-  const { data: reviewData } = useReviews(product?.id);
+  const { data: reviewStats } = useProductReviewStats(product?.id);
   const { data: relatedProducts } = useRelatedProducts(
     product?.category || '',
     product?.id || ''
@@ -266,10 +268,10 @@ export const ProductDetail: React.FC = () => {
               >
                 {product.category}
               </Link>
-              {reviewData && (
+              {reviewStats && reviewStats.totalReviews > 0 && (
                 <StarRating
-                  rating={reviewData.averageRating}
-                  totalReviews={reviewData.totalReviews}
+                  rating={reviewStats.averageRating}
+                  totalReviews={reviewStats.totalReviews}
                   showNumber
                 />
               )}
@@ -444,46 +446,7 @@ export const ProductDetail: React.FC = () => {
       </div>
 
       {/* Customer Reviews Section */}
-      <section className="py-12 border-b border-line">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h2 className="text-lg font-normal text-ink">Customer Reviews</h2>
-            <div className="flex items-center gap-2 mt-1">
-              <StarRating rating={reviewData?.averageRating || 5} size="base" />
-              <span className="text-xs font-medium text-ink">
-                {reviewData?.averageRating.toFixed(1)} out of 5
-              </span>
-              <span className="text-xs text-muted">
-                ({reviewData?.totalReviews || 0} reviews)
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Reviews List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {reviewData?.reviews.map((rev) => (
-            <div key={rev.id} className="p-5 bg-surface border border-line/60 space-y-2">
-              <div className="flex items-center justify-between">
-                <StarRating rating={rev.rating} size="sm" />
-                <span className="text-[11px] text-muted">{rev.reviewerName}</span>
-              </div>
-              {rev.title && (
-                <h4 className="text-xs font-medium text-ink">{rev.title}</h4>
-              )}
-              <p className="text-xs text-muted font-light leading-relaxed">
-                “{rev.reviewText}”
-              </p>
-              {rev.isOffline && (
-                <div className="flex items-center gap-1 text-[10px] text-muted/80 pt-1">
-                  <Check className="w-3 h-3 text-accent" />
-                  <span>Verified purchase review</span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
+      <ProductReviewsSection productId={product.id} productName={product.name} />
 
       {/* Related Products */}
       {relatedProducts && relatedProducts.length > 0 && (

@@ -185,6 +185,7 @@ export interface Database {
           review_text: string;
           status: ReviewStatus;
           is_offline: boolean;
+          show_on_home: boolean;
           created_at: string;
         };
         Insert: {
@@ -196,6 +197,7 @@ export interface Database {
           review_text: string;
           status?: ReviewStatus;
           is_offline?: boolean;
+          show_on_home?: boolean;
           created_at?: string;
         };
         Update: {
@@ -207,6 +209,7 @@ export interface Database {
           review_text?: string;
           status?: ReviewStatus;
           is_offline?: boolean;
+          show_on_home?: boolean;
           created_at?: string;
         };
         Relationships: [];
@@ -294,7 +297,14 @@ export interface Database {
       };
     };
     Views: {
-      [_ in never]: never;
+      product_review_stats: {
+        Row: {
+          product_id: string | null;
+          review_count: number;
+          avg_rating: number | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       is_admin: {

@@ -70,6 +70,7 @@ export interface Review {
   reviewText: string;
   status: 'pending' | 'approved' | 'rejected';
   isOffline: boolean;
+  showOnHome: boolean;
   createdAt: string;
 }
 

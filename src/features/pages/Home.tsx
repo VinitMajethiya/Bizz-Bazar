@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSiteSettings, useFeaturedProducts, useReviews, useDropAlertMutation } from '../../lib/hooks/useCatalog';
+import { useSiteSettings, useFeaturedProducts, useDropAlertMutation } from '../../lib/hooks/useCatalog';
+import { useHomeTestimonials } from '../../lib/hooks/useReviews';
 import { ProductCard } from '../../components/ui/ProductCard';
 import { ProductGridSkeleton } from '../../components/ui/Skeleton';
 import { ImageWithFallback } from '../../components/ui/ImageWithFallback';
+import { StarRating } from '../../components/ui/StarRating';
 
 const CATEGORIES_MOSAIC = [
   { name: 'Earrings', query: 'Earrings', span: 'col-span-1' },
@@ -20,7 +22,7 @@ export const Home: React.FC = () => {
     isError: featuredError,
     refetch: refetchFeatured,
   } = useFeaturedProducts(4);
-  const { data: reviewData } = useReviews();
+  const { data: testimonials = [] } = useHomeTestimonials(6);
 
   // Drop alert state
   const [contactInput, setContactInput] = useState('');
@@ -49,8 +51,6 @@ export const Home: React.FC = () => {
     { title: 'Gift ready', text: 'Every order is packed in a gift box.' },
     { title: 'Order by DM', text: 'Message us and we’ll confirm everything in chat.' },
   ];
-
-  const testimonials = reviewData?.reviews?.slice(0, 3) || [];
 
   return (
     <div className="w-full">
@@ -230,33 +230,39 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. Testimonials */}
-      <section className="py-12 sm:py-16 border-b border-line bg-surface">
-        <div className="max-w-site mx-auto px-5 md:px-8">
-          <div className="text-center max-w-md mx-auto mb-10">
-            <h2 className="text-lg font-normal text-ink">What customers say</h2>
-            <p className="text-xs text-muted mt-0.5 font-light">
-              Real experiences from our community
-            </p>
-          </div>
+      {/* 6. Testimonials (Rendered only when approved testimonials with show_on_home = true exist) */}
+      {testimonials.length > 0 && (
+        <section className="py-12 sm:py-16 border-b border-line bg-surface">
+          <div className="max-w-site mx-auto px-5 md:px-8">
+            <div className="text-center max-w-md mx-auto mb-10">
+              <h2 className="text-lg font-normal text-ink">What customers say</h2>
+              <p className="text-xs text-muted mt-0.5 font-light">
+                Real experiences from our community
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((item) => (
-              <div
-                key={item.id}
-                className="bg-bg border border-line/60 p-6 space-y-3"
-              >
-                <p className="text-xs sm:text-sm text-ink font-light italic leading-relaxed">
-                  “{item.reviewText}”
-                </p>
-                <div className="text-xs font-medium text-muted">
-                  — {item.reviewerName}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-bg border border-line/60 p-6 space-y-3 rounded-ui"
+                >
+                  <StarRating rating={item.rating} size="sm" />
+                  {item.title && (
+                    <h3 className="text-xs font-medium text-ink">{item.title}</h3>
+                  )}
+                  <p className="text-xs sm:text-sm text-ink font-light italic leading-relaxed whitespace-pre-line">
+                    “{item.reviewText}”
+                  </p>
+                  <div className="text-xs font-medium text-muted">
+                    — {item.reviewerName}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 7. Drop Alert Signup */}
       <section className="py-12 sm:py-16 border-b border-line bg-bg">
