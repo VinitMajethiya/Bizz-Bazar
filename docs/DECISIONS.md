@@ -46,6 +46,12 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 014: Browser-side image resizing and WebP transcoding
 2026-10-28. Image uploads are resized in the browser via HTMLCanvasElement to a maximum long edge of 1600px and transcoded to WebP (with JPEG fallback) prior to Supabase Storage upload. Why: guarantees fast upload times on mobile network connections, prevents storage quota bloat, and provides uniform high-DPI imagery across storefront viewports.
 
+## 015: Atomic enquiry-to-order conversion RPC with row-level locking
+2026-10-28. Converted enquiries to orders using an atomic Postgres transaction in `convert_enquiry_to_order` RPC with `for update` row-level locking on the enquiry record. Why: Prevents race conditions and guarantees idempotency so double-taps by an admin or network retries never create duplicate order records or leave inconsistent state. Restricts execute privileges to authenticated admin role.
+
+## 016: Formula injection defense and UTF-8 BOM in CSV exports
+2026-10-28. Neutralized CSV formula injection risks (`=`, `+`, `-`, `@`, `\t`, `\r`) by prepending a single quote (`'`) to cell strings starting with executable characters, and prefixed exports with UTF-8 Byte Order Mark (`\uFEFF`). Why: Prevents spreadsheet formula execution vulnerabilities in Excel and Google Sheets when viewing customer names or addresses, while guaranteeing accurate character decoding in Microsoft Excel across regional Windows environments.
+
 ## Template
 ```
 ## NNN: Title

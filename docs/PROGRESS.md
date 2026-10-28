@@ -3,7 +3,7 @@
 Updated by the agent at the end of every session.
 
 ## Status
-Phase: Phase 4 complete (Admin foundation and products). Ready for Phase 5 (Enquiries and orders).
+Phase: Phase 5 complete (Enquiries and orders). Ready for Phase 6 (Deals and promotions).
 
 ## Done
 - Initialized Git repository and configured Vitest testing environment with JSDOM.
@@ -79,21 +79,55 @@ Phase: Phase 4 complete (Admin foundation and products). Ready for Phase 5 (Enqu
   - **Automated Security Verification script (`supabase/seed/verify-admin.ts`)**:
     - Verifies admin can insert, update, archive products and upload/delete storage images.
     - Verifies non-admin cannot insert/update products, upload to storage, read customer enquiries, or read pending reviews.
+- **Phase 5 Enquiries and Orders**:
+  - **Database Migration (`008_realtime_orders_convert.sql`)**:
+    - Enabled Supabase Realtime publication on `enquiries` table (`alter publication supabase_realtime add table public.enquiries`).
+    - Added `set_updated_at()` trigger for `orders`.
+    - Created `convert_enquiry_to_order(p_enquiry_id, p_name, p_phone, p_address, p_total_paise)` transactional RPC: checks `is_admin()`, acquires row-level exclusive lock on enquiry (`for update`), enforces state transition checks (rejects if already converted or dropped), inserts confirmed order record, updates enquiry status to `converted`, and guarantees idempotency against duplicate invocations.
+    - Revoked execute privileges from `public` and `anon`; granted exclusively to `authenticated`.
+    - Updated `docs/DATABASE.md` documenting migration 008.
+  - **Admin Unified Pipeline (`AdminEnquiries.tsx`)**:
+    - Unified pipeline view with filter chips: All Pipeline, New, Confirmed, Processing, Packed, Shipped, Delivered, Cancelled, Dropped.
+    - Channel filtering: All Channels, WhatsApp, Instagram.
+    - Search input matching reference (e.g. BR-7K3F), customer name, or item names.
+    - Live indicator with Supabase Realtime channel subscription listening to `enquiries` insert and update events; graceful fallback to refetch on window focus.
+    - Row display: Enquiry reference, channel icon (WhatsApp / Instagram), items summary with options and quantity, subtotal in integer paise rendered via `formatINR`, relative age ("12 min ago" via `formatAge`), and status badge.
+  - **Enquiry Detail (`AdminEnquiryDetail.tsx`)**:
+    - Complete items table showing server-enforced prices, chosen materials/sizes, item quantities, subtotal, discount, customer gift note, channel source, and created timestamp.
+    - Action buttons: "Convert to order", "Mark as dropped" (with confirmation dialog), "Reopen" (for dropped enquiries), and "Copy reply message" formatted from `docs/CONTENT.md` with clipboard fallback.
+  - **Convert to Order Modal (`ConvertOrderModal.tsx`)**:
+    - Modal dialog requiring customer name, phone number, shipping address (10 to 300 characters), and prefilled total in rupees (saved as paise).
+    - Calls `convert_enquiry_to_order` RPC, disables button during mutation, and redirects to the order detail view upon success.
+  - **Order Detail & Fulfillment Stepper (`AdminEnquiryDetail.tsx`)**:
+    - 5-stage status stepper: Confirmed -> Processing -> Packed -> Shipped -> Delivered, plus Cancelled.
+    - Courier partner and tracking number modal triggered when advancing to "Shipped".
+    - Inline editable customer details (name, phone, address) and internal notes.
+    - Cancellation confirmation dialog.
+  - **CSV Export Dialog (`AdminEnquiries.tsx`, `csvExport.ts`)**:
+    - Date range filter (start and end date).
+    - RFC 4180 compliant CSV generator with spreadsheet formula injection defense (prepends single quote to cells beginning with `=`, `+`, `-`, `@`, `\t`, `\r`) and UTF-8 Byte Order Mark (`\uFEFF`) for Microsoft Excel & Google Sheets compatibility.
+  - **Admin Overview Counters (`AdminOverview.tsx`, `adminOverview.ts`)**:
+    - Live counters for `newEnquiries` and `ordersInProgress` with direct links to `/admin/enquiries?status=new` and `/admin/enquiries?status=confirmed`.
+  - **Safety & Plain-text Rendering**:
+    - All customer-supplied text (notes, customer names, shipping addresses) rendered strictly as plain text, eliminating XSS risks.
 - **Automated Tests**:
-  - 61 unit and component tests passing cleanly across 13 test suites.
-  - 2 Playwright E2E tests passing on both mobile (390x844) and desktop (1280x800).
+  - 79 unit and component tests passing across 17 test suites (including `csvExport.test.ts`, `statusStepper.test.ts`, `formatAge.test.ts`, `replyBuilder.test.ts`).
+  - 4 Playwright E2E tests passing on both mobile (390x844) and desktop (1280x800) covering storefront enquiry placement, admin pipeline visibility, conversion to order, fulfillment status stepper, and CSV download.
+  - Extended `supabase/seed/verify-admin.ts` with enquiry conversion, double-call idempotency check, and non-admin/anon RLS blocks on orders and conversion RPC.
   - Production build (`npm run build`) and strict lint (`npm run lint`) pass with 0 errors/warnings.
 
-## Acceptance Criteria Verification (Phase 4)
-- **A non-admin account cannot read or write admin data even by calling the API directly**: PASS. Verified through Supabase Row-Level Security policies in `supabase/seed/verify-admin.ts` (customer accounts are rejected on product inserts, updates, storage uploads, enquiry reads, and pending review queries) and in `AdminGuard.test.tsx`.
-- **The owner can add a product with photos from a phone**: PASS. Product form and media panel are optimized for mobile viewports (360px minimum width, bottom tab bar, single-column inputs, camera/file upload with client-side 1600px WebP resizing, mobile Up/Down photo stepper, and large touch targets).
+## Acceptance Criteria Verification (Phase 5)
+- **A tap on WhatsApp on the phone creates an enquiry that appears in the admin within two seconds**: PASS. The storefront triggers `create_enquiry` before launching the WhatsApp URI; the admin pipeline listens to Supabase Realtime changes on `enquiries` and updates state in real time.
+- **The owner can convert an enquiry, advance it to delivered, and see it in the CSV export**: PASS. Verified via Playwright E2E (`e2e/admin-orders.spec.ts`) across mobile and desktop viewports, stepping through Confirmed -> Processing -> Packed -> Shipped (courier & tracking modal) -> Delivered, and exporting CSV.
 
 ## Untested Items
-- Native camera capture roll integration on older mobile WebViews.
+- Supabase Realtime WebSocket stability across mobile cellular connection dropouts (graceful window focus refetch fallback is implemented in `useAdminPipeline`).
 - Live verification against remote Supabase database with live user credentials in `.env.local` (`npm run verify:admin`).
 
 ## Next
-- Phase 5: Enquiries and orders (live enquiry feed, convert enquiry to order, fulfillment status stepper, courier tracking number assignment, and CSV order export).
+- Phase 6: Deals and promotions (percentage, fixed amount, bundle discounts, auto-apply vs coupon code, storefront discount banner/pill, and bag discount display).
 
 ## Decisions made
 - Decision 014: Browser-side image resizing via HTMLCanvasElement to 1600px long edge with WebP transcoding prior to storage upload.
+- Decision 015: Atomic enquiry-to-order conversion RPC with row-level locking.
+- Decision 016: Formula injection defense and UTF-8 BOM in CSV exports.
