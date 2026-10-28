@@ -127,3 +127,4 @@ describe('productFormSchema validation', () => {
     expect(generateSlug('Sparkle---Pendant')).toBe('sparkle-pendant');
   });
 });
+

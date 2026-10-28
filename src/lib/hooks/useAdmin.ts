@@ -186,3 +186,4 @@ export function useAdminProductMutations() {
     isDeletingImage: deleteImageMutation.isPending,
   };
 }
+

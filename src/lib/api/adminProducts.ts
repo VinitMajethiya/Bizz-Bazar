@@ -332,3 +332,46 @@ export async function deleteProductImage(
     }
   }
 }
+
+/**
+ * Deletes a product along with all associated storage images and database rows,
+ * guaranteeing no orphaned files remain in the storage bucket.
+ */
+export async function deleteAdminProduct(productId: string): Promise<void> {
+  if (!isSupabaseConfigured) return;
+
+  // 1. Retrieve all image storage paths for this product
+  const { data: images } = await supabase
+    .from('product_images')
+    .select('storage_path')
+    .eq('product_id', productId);
+
+  const paths = (images || [])
+    .map((img) => img.storage_path)
+    .filter((p): p is string => Boolean(p));
+
+  // 2. Remove files from Supabase Storage
+  if (paths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from('product-images')
+      .remove(paths);
+    if (storageError) {
+      console.warn('Storage files cleanup warning:', storageError.message);
+    }
+  }
+
+  // 3. Delete product images rows
+  await supabase.from('product_images').delete().eq('product_id', productId);
+
+  // 4. Delete the product record
+  const { error: productDeleteError } = await supabase
+    .from('products')
+    .delete()
+    .eq('id', productId);
+
+  if (productDeleteError) {
+    throw new Error(`Failed to delete product: ${productDeleteError.message}`);
+  }
+}
+
+

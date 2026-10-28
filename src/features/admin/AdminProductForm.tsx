@@ -39,6 +39,7 @@ export const AdminProductForm: React.FC = () => {
   const [newSizeInput, setNewSizeInput] = useState('');
   const [archiveTarget, setArchiveTarget] = useState<boolean>(false);
   const [saveAndAddAnother, setSaveAndAddAnother] = useState(false);
+  const [slugWarningPendingData, setSlugWarningPendingData] = useState<ProductFormInput | null>(null);
 
   // Specifications key-value state for the dynamic table
   const [specsRows, setSpecsRows] = useState<SpecRow[]>([
@@ -201,14 +202,7 @@ export const AdminProductForm: React.FC = () => {
     });
   };
 
-  const onSubmit = async (data: ProductFormInput) => {
-    // Unique check on slug before submitting
-    const isUnique = await checkSlugUnique(data.slug, isNew ? undefined : id);
-    if (!isUnique) {
-      setError('slug', { message: 'This slug is already used by another piece' });
-      return;
-    }
-
+  const executeSave = async (data: ProductFormInput) => {
     // Convert specsRows to object
     const specsObj: Record<string, string> = {};
     specsRows.forEach((row) => {
@@ -239,6 +233,23 @@ export const AdminProductForm: React.FC = () => {
     } catch {
       // Inputs remain untouched on error
     }
+  };
+
+  const onSubmit = async (data: ProductFormInput) => {
+    // Unique check on slug before submitting
+    const isUnique = await checkSlugUnique(data.slug, isNew ? undefined : id);
+    if (!isUnique) {
+      setError('slug', { message: 'This slug is already used by another piece' });
+      return;
+    }
+
+    // Check if slug changed on an existing product
+    if (!isNew && existingProduct && data.slug !== existingProduct.slug) {
+      setSlugWarningPendingData(data);
+      return;
+    }
+
+    await executeSave(data);
   };
 
   const handleArchiveProduct = async () => {
@@ -783,6 +794,47 @@ export const AdminProductForm: React.FC = () => {
                 className="px-4 py-2 bg-ink text-bg text-xs font-normal hover:bg-accent disabled:opacity-50"
               >
                 {isArchiving ? 'Saving...' : 'Confirm'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Slug Change Warning Dialog */}
+      {slugWarningPendingData && existingProduct && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="slug-warning-title"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-sm bg-bg border border-line p-6 space-y-4 rounded-none">
+            <h2 id="slug-warning-title" className="text-base font-normal text-ink">
+              Changing the slug breaks existing links to this product
+            </h2>
+            <p className="text-xs text-muted font-light leading-relaxed">
+              You are changing the URL slug from{' '}
+              <span className="font-mono text-ink">/{existingProduct.slug}</span> to{' '}
+              <span className="font-mono text-ink">/{slugWarningPendingData.slug}</span>. Any external links, bookmarks, or previous order messages using the old URL will no longer reach this page.
+            </p>
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setSlugWarningPendingData(null)}
+                className="px-3.5 py-2 border border-line text-xs text-ink hover:bg-surface transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const pending = slugWarningPendingData;
+                  setSlugWarningPendingData(null);
+                  executeSave(pending);
+                }}
+                className="px-4 py-2 bg-ink text-bg text-xs font-normal hover:bg-accent transition-colors"
+              >
+                Confirm slug change
               </button>
             </div>
           </div>

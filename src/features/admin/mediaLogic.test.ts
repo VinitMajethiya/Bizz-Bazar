@@ -111,3 +111,4 @@ describe('Media Panel Image Logic', () => {
     expect(computeResizedDimensions(800, 600)).toEqual({ width: 800, height: 600 });
   });
 });
+

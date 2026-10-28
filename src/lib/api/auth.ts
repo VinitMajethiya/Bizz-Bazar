@@ -81,3 +81,4 @@ export async function checkCurrentAdmin(): Promise<{
     userId: session.user.id,
   };
 }
+

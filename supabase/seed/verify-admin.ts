@@ -268,3 +268,4 @@ runSecurityVerification().catch((err) => {
   console.error('Fatal error during security verification:', err);
   process.exit(1);
 });
+

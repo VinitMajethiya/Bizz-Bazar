@@ -105,3 +105,4 @@ export async function fetchAdminOverviewStats(): Promise<{
     latestEnquiries: formattedEnquiries,
   };
 }
+
