@@ -36,15 +36,15 @@ export const AdminOverview: React.FC = () => {
       label: 'New Enquiries',
       count: data?.counters.newEnquiries ?? 0,
       icon: Inbox,
-      to: '/admin/enquiries',
+      to: '/admin/enquiries?status=new',
       highlight: (data?.counters.newEnquiries ?? 0) > 0,
     },
     {
       label: 'Orders in Progress',
       count: data?.counters.ordersInProgress ?? 0,
       icon: ShoppingCart,
-      to: '/admin/enquiries',
-      highlight: false,
+      to: '/admin/enquiries?status=confirmed',
+      highlight: (data?.counters.ordersInProgress ?? 0) > 0,
     },
     {
       label: 'Pending Reviews',

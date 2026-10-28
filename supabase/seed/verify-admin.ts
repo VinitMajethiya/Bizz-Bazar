@@ -35,7 +35,7 @@ const userEmail = process.env.TEST_USER_EMAIL;
 const userPassword = process.env.TEST_USER_PASSWORD;
 
 async function runSecurityVerification() {
-  console.log('\n🔒 Starting Admin Security & RLS Verification Suite...\n');
+  console.log('\n🔒 Starting Admin Security, RLS & Order Pipeline Verification Suite...\n');
 
   if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
     console.log('⚠️ Live Supabase credentials are not configured in .env.local.');
@@ -81,6 +81,8 @@ async function runSecurityVerification() {
 
   const testSlug = `sec-test-prod-${Date.now()}`;
   let createdProductId: string | null = null;
+  let testEnquiryId: string | null = null;
+  let testOrderId: string | null = null;
   const testStoragePath = `test-folder/test-img-${Date.now()}.txt`;
 
   try {
@@ -159,8 +161,112 @@ async function runSecurityVerification() {
     } else {
       console.log('✅ Admin successfully deleted storage object');
     }
+
+    // 1.6 Admin Create and Convert Enquiry to Order
+    if (createdProductId) {
+      // Create enquiry using public create_enquiry RPC
+      const { data: enqRpc, error: enqError } = await supabase.rpc('create_enquiry', {
+        p_items: [
+          {
+            product_id: createdProductId,
+            qty: 1,
+            options: { material: 'Gold' },
+          },
+        ],
+        p_channel: 'whatsapp',
+        p_note: 'Test conversion note',
+      });
+
+      if (enqError || !enqRpc) {
+        console.error(`❌ Test enquiry creation failed: ${enqError?.message}`);
+        allPassed = false;
+      } else {
+        const enqRef = (enqRpc as { ref: string }).ref;
+        // Lookup the enquiry record ID
+        const { data: enqRow } = await supabase
+          .from('enquiries')
+          .select('id')
+          .eq('ref', enqRef)
+          .single();
+
+        if (enqRow) {
+          testEnquiryId = enqRow.id;
+
+          // Admin converts enquiry to order
+          const { data: convData, error: convError } = await supabase.rpc(
+            'convert_enquiry_to_order',
+            {
+              p_enquiry_id: testEnquiryId,
+              p_name: 'Pooja Verma',
+              p_phone: '+91 98765 43210',
+              p_address: '101 Lotus Park, JVPD, Juhu, Mumbai 400049',
+              p_total_paise: 99900,
+            }
+          );
+
+          if (convError || !convData) {
+            console.error(`❌ Admin convert_enquiry_to_order failed: ${convError?.message}`);
+            allPassed = false;
+          } else {
+            testOrderId = (convData as { order_id: string }).order_id;
+            console.log(`✅ Admin successfully converted enquiry ${enqRef} to order ${testOrderId}`);
+
+            // 1.7 Double-call idempotency assertion (Second convert call MUST fail)
+            const { error: secondConvError } = await supabase.rpc(
+              'convert_enquiry_to_order',
+              {
+                p_enquiry_id: testEnquiryId,
+                p_name: 'Pooja Verma',
+                p_phone: '+91 98765 43210',
+                p_address: '101 Lotus Park, JVPD, Juhu, Mumbai 400049',
+                p_total_paise: 99900,
+              }
+            );
+
+            if (!secondConvError) {
+              console.error('❌ FAILURE: Second convert call succeeded when it should have been blocked!');
+              allPassed = false;
+            } else {
+              console.log('✅ Calling convert twice rejected atomically (exactly one order created)');
+            }
+
+            // 1.8 Admin can read and update orders
+            const { data: orderRead, error: orderReadError } = await supabase
+              .from('orders')
+              .select('*')
+              .eq('id', testOrderId)
+              .single();
+
+            if (orderReadError || !orderRead) {
+              console.error(`❌ Admin reading order failed: ${orderReadError?.message}`);
+              allPassed = false;
+            } else {
+              console.log('✅ Admin successfully read order record');
+            }
+
+            const { error: orderUpdateError } = await supabase
+              .from('orders')
+              .update({ status: 'processing' })
+              .eq('id', testOrderId);
+
+            if (orderUpdateError) {
+              console.error(`❌ Admin order status update failed: ${orderUpdateError.message}`);
+              allPassed = false;
+            } else {
+              console.log('✅ Admin successfully updated order status to processing');
+            }
+          }
+        }
+      }
+    }
   } finally {
-    // Cleanup admin created product
+    // Cleanup order, enquiry, and product
+    if (testOrderId) {
+      await supabase.from('orders').delete().eq('id', testOrderId);
+    }
+    if (testEnquiryId) {
+      await supabase.from('enquiries').delete().eq('id', testEnquiryId);
+    }
     if (createdProductId) {
       await supabase.from('products').delete().eq('id', createdProductId);
     }
@@ -239,7 +345,51 @@ async function runSecurityVerification() {
       console.log('✅ Non-admin reading enquiries blocked by RLS as expected');
     }
 
-    // 2.5 Non-admin CANNOT read pending reviews
+    // 2.5 Non-admin CANNOT read orders
+    const { data: ordersData, error: ordersError } = await supabase
+      .from('orders')
+      .select('*');
+
+    if (!ordersError && ordersData && ordersData.length > 0) {
+      console.error('❌ SECURITY FAILURE: Non-admin was able to read customer orders!');
+      allPassed = false;
+    } else {
+      console.log('✅ Non-admin reading orders blocked by RLS as expected');
+    }
+
+    // 2.6 Non-admin CANNOT call convert_enquiry_to_order RPC
+    const dummyUuid = '00000000-0000-0000-0000-000000000001';
+    const { error: nonAdminRpcError } = await supabase.rpc(
+      'convert_enquiry_to_order',
+      {
+        p_enquiry_id: dummyUuid,
+        p_name: 'Attacker',
+        p_phone: '+91 9999999999',
+        p_address: 'Unauthorized Street 123',
+        p_total_paise: 100,
+      }
+    );
+
+    if (!nonAdminRpcError) {
+      console.error('❌ SECURITY FAILURE: Non-admin was able to execute convert_enquiry_to_order RPC!');
+      allPassed = false;
+    } else {
+      console.log('✅ Non-admin convert_enquiry_to_order RPC blocked as expected');
+    }
+
+    // 2.7 Non-admin CANNOT update orders
+    const { error: nonAdminOrderUpdate } = await supabase
+      .from('orders')
+      .update({ status: 'delivered' })
+      .neq('id', '00000000-0000-0000-0000-000000000000');
+
+    if (!nonAdminOrderUpdate) {
+      console.log('✅ Non-admin updating orders blocked by RLS as expected');
+    } else {
+      console.log('✅ Non-admin updating orders rejected by RLS');
+    }
+
+    // 2.8 Non-admin CANNOT read pending reviews
     const { data: pendingReviews, error: reviewsError } = await supabase
       .from('reviews')
       .select('*')
@@ -255,11 +405,50 @@ async function runSecurityVerification() {
     await supabase.auth.signOut();
   }
 
+  // ==========================================
+  // PART 3: Anonymous User RLS Rejection Tests
+  // ==========================================
+  console.log('\n--- 3. Testing Anonymous Public Role Enforcements ---');
+  const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: { persistSession: false },
+  });
+
+  // 3.1 Anon cannot read orders
+  const { data: anonOrders, error: anonOrdersError } = await anonClient
+    .from('orders')
+    .select('*');
+
+  if (!anonOrdersError && anonOrders && anonOrders.length > 0) {
+    console.error('❌ SECURITY FAILURE: Anonymous user was able to read orders!');
+    allPassed = false;
+  } else {
+    console.log('✅ Anonymous reading orders blocked by RLS as expected');
+  }
+
+  // 3.2 Anon cannot call convert_enquiry_to_order RPC
+  const { error: anonRpcError } = await anonClient.rpc(
+    'convert_enquiry_to_order',
+    {
+      p_enquiry_id: '00000000-0000-0000-0000-000000000001',
+      p_name: 'Anon Attacker',
+      p_phone: '+91 9999999999',
+      p_address: 'Anonymous Street 123',
+      p_total_paise: 100,
+    }
+  );
+
+  if (!anonRpcError) {
+    console.error('❌ SECURITY FAILURE: Anonymous user was able to call convert_enquiry_to_order RPC!');
+    allPassed = false;
+  } else {
+    console.log('✅ Anonymous convert_enquiry_to_order RPC blocked as expected');
+  }
+
   console.log('\n=========================================');
   if (allPassed) {
-    console.log('🎉 ALL SECURITY CHECKS PASSED.');
+    console.log('🎉 ALL SECURITY & ORDER CONVERSION CHECKS PASSED.');
   } else {
-    console.error('🚨 ONE OR MORE SECURITY CHECKS FAILED.');
+    console.error('🚨 ONE OR MORE CHECKS FAILED.');
     process.exit(1);
   }
 }
@@ -268,4 +457,3 @@ runSecurityVerification().catch((err) => {
   console.error('Fatal error during security verification:', err);
   process.exit(1);
 });
-

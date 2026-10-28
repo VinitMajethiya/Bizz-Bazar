@@ -65,10 +65,22 @@ export async function fetchAdminOverviewStats(): Promise<{
     .from('newsletter_leads')
     .select('id', { count: 'exact', head: true });
 
-  // 4. Enquiries (if any exist)
-  const { data: recentEnquiries, count: newEnquiriesCount } = await supabase
+  // 4. New enquiries count (status = 'new')
+  const { count: newEnquiriesCount } = await supabase
     .from('enquiries')
-    .select('*', { count: 'exact' })
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'new');
+
+  // 5. Orders in progress count (status in confirmed, processing, packed, shipped)
+  const { count: inProgressOrdersCount } = await supabase
+    .from('orders')
+    .select('id', { count: 'exact', head: true })
+    .in('status', ['confirmed', 'processing', 'packed', 'shipped']);
+
+  // 6. Recent enquiries list
+  const { data: recentEnquiries } = await supabase
+    .from('enquiries')
+    .select('*')
     .order('created_at', { ascending: false })
     .limit(5);
 
@@ -98,11 +110,10 @@ export async function fetchAdminOverviewStats(): Promise<{
       lowStockOrSoldOut: lowStockCount || 0,
       dropAlertLeads: leadsCount || 0,
       newEnquiries: newEnquiriesCount || 0,
-      ordersInProgress: 0, // Until Phase 5
+      ordersInProgress: inProgressOrdersCount || 0,
       pendingReviews: 0, // Until Phase 7
       liveDeals: 0, // Until Phase 6
     },
     latestEnquiries: formattedEnquiries,
   };
 }
-

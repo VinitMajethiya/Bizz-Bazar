@@ -19,14 +19,11 @@ const AdminLogin = lazy(() => import('@/features/admin/AdminLogin'));
 const AdminOverview = lazy(() => import('@/features/admin/AdminOverview'));
 const AdminProducts = lazy(() => import('@/features/admin/AdminProducts'));
 const AdminProductForm = lazy(() => import('@/features/admin/AdminProductForm'));
+const AdminEnquiries = lazy(() => import('@/features/admin/AdminEnquiries'));
+const AdminEnquiryDetail = lazy(() => import('@/features/admin/AdminEnquiryDetail'));
 const AdminMore = lazy(() => import('@/features/admin/AdminMore'));
 
-// Placeholders for subsequent phases
-const AdminEnquiries = lazy(() =>
-  import('@/features/admin/AdminPlaceholders').then((m) => ({
-    default: m.AdminEnquiriesPlaceholder,
-  }))
-);
+// Placeholders for subsequent phases (Deals, Reviews, Content)
 const AdminReviews = lazy(() =>
   import('@/features/admin/AdminPlaceholders').then((m) => ({
     default: m.AdminReviewsPlaceholder,
@@ -92,9 +89,9 @@ export const router = createBrowserRouter([
       { path: 'products', element: <AdminProducts /> },
       { path: 'products/new', element: <AdminProductForm /> },
       { path: 'products/:id', element: <AdminProductForm /> },
-      { path: 'deals', element: <AdminDeals /> },
       { path: 'enquiries', element: <AdminEnquiries /> },
-      { path: 'enquiries/:id', element: <AdminEnquiries /> },
+      { path: 'enquiries/:id', element: <AdminEnquiryDetail /> },
+      { path: 'deals', element: <AdminDeals /> },
       { path: 'reviews', element: <AdminReviews /> },
       { path: 'content', element: <AdminContent /> },
       { path: 'more', element: <AdminMore /> },

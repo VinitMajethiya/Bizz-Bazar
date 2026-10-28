@@ -226,7 +226,15 @@ export interface Database {
           status?: EnquiryStatus;
           created_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'orders_enquiry_id_fkey';
+            columns: ['id'];
+            isOneToOne: false;
+            referencedRelation: 'orders';
+            referencedColumns: ['enquiry_id'];
+          },
+        ];
       };
       orders: {
         Row: {
@@ -271,7 +279,15 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'orders_enquiry_id_fkey';
+            columns: ['enquiry_id'];
+            isOneToOne: true;
+            referencedRelation: 'enquiries';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       reviews: {
         Row: {
@@ -411,6 +427,21 @@ export interface Database {
           items: Json;
           subtotal_paise: number;
           discount_paise: number;
+        };
+      };
+      convert_enquiry_to_order: {
+        Args: {
+          p_enquiry_id: string;
+          p_name: string;
+          p_phone: string;
+          p_address: string;
+          p_total_paise: number;
+        };
+        Returns: {
+          order_id: string;
+          enquiry_id: string;
+          status: OrderStatus;
+          total_paise: number;
         };
       };
     };
