@@ -44,7 +44,7 @@ const DEFAULT_SPECS = {
   Material: 'Anti-tarnish plated brass or stainless steel, nickel-free',
   Care: 'Keep dry, avoid perfume and lotion, store in the box',
   Packaging: 'Gift box and care card included',
-  Shipping: 'Dispatch in 24 to 48 hours, 7-day exchange on manufacturing defects',
+  Ordering: 'Browse the catalogue, then tap to order directly via WhatsApp or Instagram DM',
 };
 
 const PRODUCTS = [

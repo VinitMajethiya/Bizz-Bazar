@@ -103,3 +103,4 @@ export function useCMSPage(slug: string) {
     staleTime: 1000 * 60 * 5,
   });
 }
+

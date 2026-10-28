@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%" fill="none" role="img" aria-label="By Raya.co logo">
+  <!-- Cream circle background -->
+  <circle cx="80" cy="80" r="76" fill="#f6f1ea" stroke="#ebe4dc" stroke-width="2"/>
+  <!-- Top BY -->
+  <text x="80" y="52" text-anchor="middle" font-family="'Jost', 'Helvetica Neue', sans-serif" font-size="12" font-weight="500" letter-spacing="4" fill="#7a2e2a">BY</text>
+  <!-- Script/Editorial Raya -->
+  <text x="80" y="92" text-anchor="middle" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-size="36" font-style="italic" font-weight="600" fill="#7a2e2a">Raya</text>
+  <!-- Suffix .co -->
+  <text x="80" y="116" text-anchor="middle" font-family="'Jost', 'Helvetica Neue', sans-serif" font-size="11" font-weight="400" letter-spacing="3" fill="#7d726f">.CO</text>
+</svg>
