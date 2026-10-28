@@ -335,33 +335,6 @@ Pieces are made in small batches and dispatched directly to your doorstep in sig
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    reviewer_name: 'Riya',
-    title: 'Pune',
-    rating: 5,
-    review_text: 'Looks way more expensive than it is.',
-    status: 'approved' as const,
-    is_offline: true,
-  },
-  {
-    reviewer_name: 'Sneha',
-    title: 'Mumbai',
-    rating: 5,
-    review_text: 'Ordering over DM took two minutes.',
-    status: 'approved' as const,
-    is_offline: true,
-  },
-  {
-    reviewer_name: 'Anjali',
-    title: 'Kolhapur',
-    rating: 5,
-    review_text: 'Packaging made it an easy gift.',
-    status: 'approved' as const,
-    is_offline: true,
-  },
-];
-
 async function seed() {
   console.log('🌱 Starting database seed for By Raya.co...\n');
 
@@ -396,23 +369,6 @@ async function seed() {
     if (error) console.error(`Error setting page ${page.slug}:`, error.message);
   }
   console.log('✓ CMS pages seeded');
-
-  // 4. Seed Testimonials
-  console.log('\n⭐ Seeding offline testimonials...');
-  for (const t of TESTIMONIALS) {
-    const { data: existing } = await supabase
-      .from('reviews')
-      .select('id')
-      .eq('reviewer_name', t.reviewer_name)
-      .eq('review_text', t.review_text)
-      .limit(1);
-
-    if (!existing || existing.length === 0) {
-      const { error } = await supabase.from('reviews').insert(t);
-      if (error) console.error(`Error adding testimonial from ${t.reviewer_name}:`, error.message);
-    }
-  }
-  console.log('✓ Testimonials verified/seeded');
 
   // 6. Seed Products and Media
   console.log('\n💎 Seeding 16 starting products...');

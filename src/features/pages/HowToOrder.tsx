@@ -1,71 +1,41 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { MessageCircle, Instagram, ShoppingBag } from 'lucide-react';
+import { useCMSPage } from '../../lib/api/pages';
+import { MarkdownRenderer } from '../../components/ui/MarkdownRenderer';
 
 export const HowToOrder: React.FC = () => {
+  const { data: page, isLoading } = useCMSPage('how-to-order');
+
+  const title = page?.title || 'How to Order';
+  const metaDescription =
+    page?.metaDescription ||
+    'Simple guide to placing an order directly on WhatsApp or Instagram DM with By Raya.co.';
+
   return (
-    <article className="max-w-site mx-auto px-5 md:px-8 py-12 md:py-16">
+    <>
       <Helmet>
-        <title>How to Order | By Raya.co</title>
-        <meta
-          name="description"
-          content="Simple, personal ordering via chat. Browse our catalogue and place your order on WhatsApp or Instagram DM."
-        />
+        <title>{title} — By Raya.co</title>
+        <meta name="description" content={metaDescription} />
       </Helmet>
 
-      <div className="max-w-2xl mx-auto space-y-8">
-        <header className="space-y-2 border-b border-line pb-6">
-          <h1 className="text-3xl font-light text-ink">How to order</h1>
-          <p className="text-xs text-muted font-light">
-            We operate as a personal, digital catalogue. Here is how ordering works.
-          </p>
-        </header>
+      <article className="max-w-site mx-auto px-5 md:px-8 py-12 md:py-16">
+        <div className="max-w-2xl mx-auto space-y-6">
+          <header className="space-y-2 border-b border-line pb-6">
+            <h1 className="text-3xl font-light text-ink">{title}</h1>
+          </header>
 
-        <div className="space-y-8 text-xs md:text-sm text-ink/90 leading-relaxed font-light">
-          <div className="flex gap-4 items-start">
-            <div className="w-8 h-8 rounded-full bg-surface border border-line flex items-center justify-center shrink-0 text-muted">
-              <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
+          {isLoading ? (
+            <div className="space-y-3 py-6 animate-pulse">
+              <div className="h-4 bg-line/50 rounded w-full" />
+              <div className="h-4 bg-line/50 rounded w-5/6" />
+              <div className="h-4 bg-line/50 rounded w-4/6" />
             </div>
-            <div className="space-y-1">
-              <h2 className="text-sm font-medium text-ink">1. Browse and pick your pieces</h2>
-              <p>
-                Explore our catalogue and add pieces you love to your bag. Choose your preferred material or size if options are available, and add an optional gift note or custom request.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 items-start">
-            <div className="w-8 h-8 rounded-full bg-surface border border-line flex items-center justify-center shrink-0 text-muted">
-              <MessageCircle className="w-4 h-4 stroke-[1.5]" />
-            </div>
-            <div className="space-y-1">
-              <h2 className="text-sm font-medium text-ink">2. Tap Order on WhatsApp or Instagram</h2>
-              <p>
-                From your bag, tap <strong>Order on WhatsApp</strong> or <strong>Order on Instagram</strong>. An enquiry record with your selected pieces and enquiry reference number is saved automatically so your request is never lost.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 items-start">
-            <div className="w-8 h-8 rounded-full bg-surface border border-line flex items-center justify-center shrink-0 text-muted">
-              <Instagram className="w-4 h-4 stroke-[1.5]" />
-            </div>
-            <div className="space-y-1">
-              <h2 className="text-sm font-medium text-ink">3. We confirm availability and details in chat</h2>
-              <p>
-                We review your enquiry, confirm stock availability, and finalize details directly with you in chat. [owner: add specific payment instructions, delivery zones, and response times here]
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-line space-y-2 text-xs text-muted">
-            <p>
-              Have a question before ordering? Reach out to us anytime on WhatsApp or DM us at <a href="https://instagram.com/by.raya.co" target="_blank" rel="noopener noreferrer" className="text-accent underline">@by.raya.co</a>.
-            </p>
-          </div>
+          ) : (
+            <MarkdownRenderer content={page?.bodyMd || ''} />
+          )}
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 };
 
