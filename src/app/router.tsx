@@ -29,8 +29,8 @@ const AdminReviews = lazy(() =>
   }))
 );
 const AdminContent = lazy(() =>
-  import('@/features/admin/AdminPlaceholders').then((m) => ({
-    default: m.AdminContentPlaceholder,
+  import('@/features/admin/AdminContent').then((m) => ({
+    default: m.AdminContent,
   }))
 );
 
