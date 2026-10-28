@@ -3,7 +3,7 @@
 Updated by the agent at the end of every session.
 
 ## Status
-Phase: Phase 5 complete (Enquiry inbox & digital catalogue scope). Ready for Phase 6 (Reviews and deals).
+Phase: Phase 6 complete (Customer reviews, moderation queue, and home testimonials). Ready for Phase 7 (Content and Site Settings CMS).
 
 ## Done
 - Initialized Git repository and configured Vitest testing environment with JSDOM.
@@ -99,28 +99,64 @@ Phase: Phase 5 complete (Enquiry inbox & digital catalogue scope). Ready for Pha
     - Action buttons: "Mark handled", "Reopen", "Mark as dropped" (with confirmation modal), and "Copy reply message" formatted from `docs/CONTENT.md` with clipboard fallback.
   - **Admin Overview Counters (`AdminOverview.tsx`, `adminOverview.ts`)**:
     - Counters for `New enquiries`, `Total enquiries`, `Live products`, `Low stock or sold out`, `Pending reviews`, `Live deals`, and `Drop-alert sign-ups`.
-  - **Deals Reduction**:
-    - Reduced deals model to percentage and flat coupon codes only; removed fixed-price and bundle discounts from UI, types, and logic.
+  - **Phase 6 Reviews System & Digital Catalogue Alignment**:
+    - **Total Deals & Coupon Purge**: Removed all deals, discount badges, coupon code inputs, discount columns in enquiry triage, and discount logic across frontend and backend (Decision 020).
+    - **Database Migration 010**:
+      - Dropped `deals` table & `discount_type` enum.
+      - Dropped `coupon_code` and `discount_paise` from `enquiries`.
+      - Replaced `create_enquiry` RPC with 3 parameters: `p_items`, `p_channel`, `p_note` (with strict `extensions` search path fix).
+      - Added `reviews.show_on_home boolean not null default false`.
+      - Created `product_review_stats` view with `security_invoker = true` aggregating review count and average rating.
+      - Hardened `submit review` RLS policy to enforce pending status, offline=false, show_on_home=false, rating 1-5, and string length boundaries.
+    - **Storefront Reviews & Write Review Form**:
+      - `product_review_stats` view integration: Average rating and count displayed on Product Detail; hidden if 0 reviews.
+      - Paginated product reviews: 5 reviews loaded at a time with "Show more reviews" button.
+      - Plain-text rendering: Reviews rendered strictly as text with `whitespace-pre-line` to prevent XSS.
+      - Write Review modal (`WriteReviewModal.tsx`): 1-5 interactive star picker, name (1-80 chars), headline, review text (5-2000 chars).
+      - Multi-layer anti-spam protection:
+        - Invisible honeypot trap (`website_trap`): silent fake success without DB insert.
+        - 3-second elapsed minimum check: rejects instant programmatic submissions.
+        - 24-hour duplicate submission guard in `localStorage` per product (`byraya_reviewed_<productId>`).
+    - **Home Page Testimonials**:
+      - Only approved testimonials with `show_on_home = true` are rendered (up to 6 cards with star rating, quote, and customer name).
+      - Testimonials section is completely hidden if 0 approved home testimonials exist.
+    - **Admin Reviews Moderation (`/admin/reviews`)**:
+      - Moderation queue with tabs `Pending`, `Shown` (approved), `Hidden` (rejected), displaying live item counts.
+      - Filter by product dropdown and live text search across reviewer name, title, and body.
+      - Review card with linked product name (or "Whole shop / General"), rating, name, date, customer vs owner-added indicator (`is_offline`), and plain-text body.
+      - Home page display switch: Enabled exclusively for Shown reviews; automatically disabled and cleared when moved to Hidden.
+      - Moderation actions: "Show" (approve), "Hide" (reject), "Delete" (modal confirmation).
+      - Add Testimonial modal: Lets owner record offline DM testimonials directly with `is_offline = true`, rating, optional product link, and home display toggle.
+      - Overview Pending reviews counter links directly to `/admin/reviews?tab=pending`.
+    - **Idempotent Seed Update**:
+      - `seed.ts` seeds 3 placeholder testimonials with stable UUID keys (`{ onConflict: 'id' }`), approved, `is_offline = true`, `show_on_home = true`, with text starting with `"[placeholder, replace]"`.
+    - **Letter-Spacing & Typographic Normalization**:
+      - Stripped `tracking-wide`, `tracking-[0.2em]`, and `uppercase` transforms across all components, badges, nav links, ticker, and admin headers.
+      - Only the brand wordmark in `Logo.tsx` retains letter-spacing (`tracking-[0.2em] uppercase`), strictly matching `DESIGN.md`.
+    - **Non-Vacuous Verification Checks**:
+      - Hardened `verify.ts` and `verify-admin.ts` to abort immediately with exit code 1 if seed is missing (0 products).
+      - Insert live `TEST-` enquiries and `TEST-` reviews before asserting that non-admin and anon users receive 0 rows; teardown deletes all `TEST-` rows upon completion.
   - **Automated Tests**:
-    - 69 unit and component tests passing across 15 test suites in Vitest.
-    - 4 Playwright E2E tests passing on both mobile (390x844) and desktop (1280x800) covering storefront ordering and admin enquiry inbox triage.
-    - Updated `supabase/seed/verify-admin.ts` and `verify.ts` verifying RLS on enquiries, status updates (`handled`, `dropped`), and internal notes.
+    - 78 unit and component tests passing across 16 test suites in Vitest.
+    - 6 Playwright E2E tests passing on both mobile (390x844) and desktop (1280x800) covering storefront order flow, enquiry triage, and review submission & admin moderation.
     - Production build (`npm run build`) and strict lint (`npm run lint`) pass with 0 errors/warnings.
 
-## Acceptance Criteria Verification (Phase 5)
-- **A tap on WhatsApp or Instagram creates an enquiry that appears in the admin inbox**: PASS. Verified via Playwright E2E smoke tests on mobile and desktop viewports (`e2e/enquiry-inbox.spec.ts`).
-- **The owner can manage enquiries in admin (mark handled, add internal notes, copy reply message)**: PASS. Verified in unit tests and Playwright E2E.
-- **Strict digital catalogue scope**: PASS. No payment gateway, no orders table, no fulfillment/tracking code exists.
+## Acceptance Criteria Verification (Phase 6)
+- **Storefront reviews display accurate stats from database**: PASS. View `product_review_stats` feeds average rating and count.
+- **Write review form enforces anti-spam and moderation**: PASS. Honeypot, 3s delay timer, 24h duplicate guard, and pending status enforced by RLS.
+- **Admin moderation queue allows Show, Hide, Delete, and Home Toggle**: PASS. Verified in unit tests and Playwright E2E.
+- **Home page testimonials gated to approved + show_on_home**: PASS. Completely hidden if 0; displays up to 6 approved cards.
+- **Zero deals, discounts, or coupons remain**: PASS. Deals table dropped, all discount logic and mentions removed.
 
 ## Untested Items
-- Supabase Realtime WebSocket stability across cellular network dropouts (handled via window focus refetch fallback in `useAdminEnquiries`).
-- Live remote database execution with owner credentials in `.env.local` (`npm run verify:admin`).
+- Live remote database verification (`npm run verify:admin`) pending owner configuring `TEST_` user credentials in `.env.local` and running `npm run seed`.
 
 ## Next
-- Phase 6: Reviews moderation and deals (percentage and flat coupon codes only).
+- Phase 7: Content & Site Settings CMS (manage announcement ticker, hero banner, our story, policy pages, Instagram bio sync).
 
 ## Decisions made
 - Decision 014: Browser-side image resizing via HTMLCanvasElement to 1600px long edge with WebP transcoding prior to storage upload.
 - Decision 017: Digital catalogue only — no payments, no fulfilment tracking.
 - Decision 018: Enquiry inbox with new, handled, and dropped statuses.
-- Decision 019: Deals simplified to percentage and flat coupons.
+- Decision 020: No coupons or deals; the site is a catalogue.
+- Decision 021: Reviews moderation, anti-spam guards, and home page visibility gating.

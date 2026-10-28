@@ -64,6 +64,9 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 020: No coupons or deals; the site is a catalogue
 2026-10-28. Completely removed all deals, promo codes, discounts, and coupon systems across database, storefront, admin, and order messages. Supersedes Decision 009 (defer coupon UI) and Decision 019 (simplified coupons). Why: The brand sells at fair everyday prices with no artificial markups or discounts. A clean digital catalogue without promotional gimmicks directly reflects the brand ethos: "everyday luxury, without the luxury price."
 
+## 021: Reviews moderation, anti-spam guards, and home page visibility gating
+2026-10-28. Customer reviews are submitted via a storefront form with multiple spam defenses: hidden honeypot trap (website_trap), minimum 3-second elapsed time check, and 24-hour duplicate localStorage guard per product. All customer submissions enter the database with status pending, is_offline = false, and show_on_home = false. Only the owner in /admin/reviews can approve (Shown), reject (Hidden), delete, or toggle home page visibility (show_on_home). The owner can also record offline chat testimonials (is_offline = true). Testimonials on the home page only render when approved with show_on_home = true; if 0 exist, the home section is hidden completely. All review text is strictly rendered as plain text to prevent XSS. Why: Protects the catalogue against spam while providing authentic, verified social proof with complete editorial control for the owner.
+
 ## Template
 ```
 ## NNN: Title
