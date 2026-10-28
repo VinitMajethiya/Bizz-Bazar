@@ -16,6 +16,8 @@ const CATEGORIES_MOSAIC = [
 
 export const Home: React.FC = () => {
   const { data: settings } = useSiteSettings();
+  const instagramHandle = settings?.instagram_handle || 'by.raya.co';
+  const instagramUrl = `https://www.instagram.com/${instagramHandle}`;
   const {
     data: featuredProducts,
     isLoading: featuredLoading,
@@ -314,12 +316,12 @@ export const Home: React.FC = () => {
               On Instagram
             </h2>
             <a
-              href="https://instagram.com/by.raya.co"
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-accent hover:underline mt-1 inline-block font-light"
             >
-              @by.raya.co
+              @{instagramHandle}
             </a>
           </div>
 
@@ -327,13 +329,13 @@ export const Home: React.FC = () => {
             {[1, 2, 3, 4].map((i) => (
               <a
                 key={i}
-                href="https://instagram.com/by.raya.co"
+                href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="aspect-square bg-bg border border-line/60 flex items-center justify-center text-xs text-muted hover:border-ink transition-colors"
-                aria-label={`View Instagram post ${i}`}
+                aria-label={`View Instagram profile @${instagramHandle} item ${i}`}
               >
-                <span className="text-[11px] font-light">@by.raya.co #{i}</span>
+                <span className="text-[11px] font-light">@{instagramHandle} #{i}</span>
               </a>
             ))}
           </div>
