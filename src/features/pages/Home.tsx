@@ -4,14 +4,61 @@ import { useSiteSettings, useFeaturedProducts, useDropAlertMutation } from '../.
 import { useHomeTestimonials } from '../../lib/hooks/useReviews';
 import { ProductCard } from '../../components/ui/ProductCard';
 import { ProductGridSkeleton } from '../../components/ui/Skeleton';
-import { ImageWithFallback } from '../../components/ui/ImageWithFallback';
 import { StarRating } from '../../components/ui/StarRating';
 
 const CATEGORIES_MOSAIC = [
-  { name: 'Earrings', query: 'Earrings', span: 'col-span-1' },
-  { name: 'Bracelets', query: 'Bracelets', span: 'col-span-1' },
-  { name: 'Necklaces', query: 'Necklaces', span: 'col-span-1' },
-  { name: 'Rings & Gift Sets', query: 'Gift Sets', span: 'col-span-1 sm:col-span-3', isWide: true },
+  {
+    name: 'Earrings',
+    query: 'Earrings',
+    span: 'col-span-1',
+    image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80',
+    subtitle: 'Hoops, studs & drops',
+  },
+  {
+    name: 'Bracelets',
+    query: 'Bracelets',
+    span: 'col-span-1',
+    image: 'https://images.unsplash.com/photo-1611591475152-47354c86e246?auto=format&fit=crop&w=800&q=80',
+    subtitle: 'Cuffs & delicate chains',
+  },
+  {
+    name: 'Necklaces',
+    query: 'Necklaces',
+    span: 'col-span-1',
+    image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&w=800&q=80',
+    subtitle: 'Pendants & layer pieces',
+  },
+  {
+    name: 'Rings & Gift Sets',
+    query: 'Gift Sets',
+    span: 'col-span-1 sm:col-span-3',
+    isWide: true,
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=80',
+    subtitle: 'Curated gift boxes & stacks',
+  },
+];
+
+const INSTAGRAM_POSTS = [
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=600&q=80',
+    alt: 'Gold twist hoops on linen',
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80',
+    alt: 'Everyday elegance styling',
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80',
+    alt: 'Layered gold chains',
+  },
+  {
+    id: 4,
+    image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=600&q=80',
+    alt: 'Gift packaging and care card',
+  },
 ];
 
 export const Home: React.FC = () => {
@@ -54,6 +101,10 @@ export const Home: React.FC = () => {
     { title: 'Order by DM', text: 'Message us and we’ll confirm everything in chat.' },
   ];
 
+  const heroImage =
+    settings?.hero_image_url ||
+    'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1600&q=85';
+
   return (
     <div className="w-full">
       {/* 1. Hero Section (DESIGN.md: on mobile image sits on top and text below; on desktop headline bottom-left over image) */}
@@ -62,29 +113,18 @@ export const Home: React.FC = () => {
           <div className="flex flex-col md:relative md:min-h-[520px] lg:min-h-[600px] md:justify-end">
             {/* Hero Photograph / Visual */}
             <div className="w-full aspect-[4/3] md:aspect-auto md:absolute md:inset-0 bg-surface overflow-hidden">
-              {settings?.hero_image_url ? (
-                <img
-                  src={settings.hero_image_url}
-                  alt={settings.hero_headline || 'By Raya jewellery collection'}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-[#f2ece4] dark:bg-[#1f1918] flex flex-col items-center justify-center p-8 text-center">
-                  <span className="text-3xl md:text-5xl font-light text-muted/40 font-serif mb-2">
-                    By Raya.co
-                  </span>
-                  <p className="text-xs text-muted font-light">
-                    Everyday luxury, without the luxury price
-                  </p>
-                </div>
-              )}
+              <img
+                src={heroImage}
+                alt={settings?.hero_headline || 'By Raya jewellery collection'}
+                className="w-full h-full object-cover"
+              />
               {/* Desktop dark scrim for readability */}
-              <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+              <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
             </div>
 
             {/* Hero Copy: sits below on mobile, anchored bottom-left on desktop */}
             <div className="bg-bg md:bg-transparent px-5 py-8 md:p-12 md:relative md:z-10 max-w-xl">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.08] text-ink md:text-white mb-3">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.08] text-ink md:text-white mb-3 drop-shadow-xs">
                 {settings?.hero_headline || 'Effortless elegance for every occasion'}
               </h1>
               <p className="text-xs sm:text-sm text-muted md:text-white/90 leading-relaxed font-light mb-5 max-w-md">
@@ -179,18 +219,25 @@ export const Home: React.FC = () => {
               <Link
                 key={cat.name}
                 to={`/shop?category=${encodeURIComponent(cat.query)}`}
-                className={`group relative bg-surface border border-line/60 overflow-hidden ${
+                className={`group relative bg-surface border border-line/60 overflow-hidden rounded-ui ${
                   cat.isWide ? 'aspect-[2/1] sm:aspect-[3/1]' : 'aspect-square'
-                } ${cat.span} flex items-end p-5 transition-transform duration-200 hover:border-ink/40`}
+                } ${cat.span} flex items-end p-5 transition-all duration-300 hover:border-accent hover:shadow-xs`}
               >
-                <div className="absolute inset-0 bg-surface transition-opacity group-hover:opacity-90 flex items-center justify-center">
-                  <span className="text-4xl text-muted/20 font-serif select-none">
-                    {cat.name.charAt(0)}
-                  </span>
+                <div className="absolute inset-0 overflow-hidden">
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10 group-hover:from-black/80 transition-colors" />
                 </div>
-                <div className="relative z-10">
-                  <span className="text-xs font-medium text-ink group-hover:text-accent transition-colors">
+                <div className="relative z-10 text-white">
+                  <span className="text-sm sm:text-base font-normal tracking-wide block drop-shadow-sm">
                     {cat.name}
+                  </span>
+                  <span className="text-[11px] text-white/80 font-light block mt-0.5">
+                    {cat.subtitle}
                   </span>
                 </div>
               </Link>
@@ -203,12 +250,12 @@ export const Home: React.FC = () => {
       <section className="py-14 sm:py-20 border-b border-line">
         <div className="max-w-site mx-auto px-5 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="aspect-[4/3] bg-surface border border-line/60 overflow-hidden">
-              <ImageWithFallback
-                src={null}
-                alt="By Raya jewellery craft"
-                fallbackInitial="R"
-                aspectRatio="landscape"
+            <div className="aspect-[4/3] bg-surface border border-line/60 overflow-hidden rounded-ui">
+              <img
+                src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=85"
+                alt="By Raya handcrafted demi-fine jewellery"
+                className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="space-y-4 max-w-lg">
@@ -326,16 +373,26 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
-            {[1, 2, 3, 4].map((i) => (
+            {INSTAGRAM_POSTS.map((post) => (
               <a
-                key={i}
+                key={post.id}
                 href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="aspect-square bg-bg border border-line/60 flex items-center justify-center text-xs text-muted hover:border-ink transition-colors"
-                aria-label={`View Instagram profile @${instagramHandle} item ${i}`}
+                className="group relative aspect-square bg-surface border border-line/60 overflow-hidden rounded-ui hover:border-accent transition-colors"
+                aria-label={`View Instagram post: ${post.alt}`}
               >
-                <span className="text-[11px] font-light">@{instagramHandle} #{i}</span>
+                <img
+                  src={post.image}
+                  alt={post.alt}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-[11px] font-medium bg-black/60 px-2.5 py-1 rounded-full">
+                    @{instagramHandle}
+                  </span>
+                </div>
               </a>
             ))}
           </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logoSvg from '@/assets/logo.svg';
+import logoPng from '@/assets/logo.png';
 
 interface LogoProps {
   className?: string;
@@ -10,22 +10,22 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({
   className = '',
-  variant = 'wordmark',
+  variant = 'full',
   linkTo = '/',
 }) => {
   const content = (
-    <div className={`inline-flex items-center gap-2 select-none ${className}`}>
+    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
       {variant !== 'wordmark' && (
         <img
-          src={logoSvg}
-          alt="By Raya.co logo mark"
-          className="h-8 w-8 object-contain"
-          width="32"
-          height="32"
+          src={logoPng}
+          alt="By Raya.co logo"
+          className="h-8 w-8 sm:h-9 sm:w-9 rounded-full object-cover border border-line/60 shadow-xs flex-shrink-0"
+          width="36"
+          height="36"
         />
       )}
       {variant !== 'icon' && (
-        <span className="font-sans text-base font-normal tracking-[0.2em] uppercase text-ink">
+        <span className="font-sans text-sm sm:text-base font-normal tracking-[0.2em] uppercase text-ink">
           By Raya<span className="text-muted lowercase tracking-normal">.co</span>
         </span>
       )}

@@ -24,6 +24,15 @@ export const OurStory: React.FC = () => {
             <h1 className="text-3xl font-light text-ink">{title}</h1>
           </header>
 
+          {/* Editorial Lifestyle Photograph */}
+          <div className="aspect-[21/9] sm:aspect-[16/7] w-full bg-surface border border-line overflow-hidden rounded-ui">
+            <img
+              src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85"
+              alt="By Raya handcrafted demi-fine jewellery styling"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
           {isLoading ? (
             <div className="space-y-3 py-6 animate-pulse">
               <div className="h-4 bg-line/50 rounded w-full" />

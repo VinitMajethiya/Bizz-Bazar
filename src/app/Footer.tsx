@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '../lib/hooks/useCatalog';
+import { Logo } from '../components/Logo';
 
 export const Footer: React.FC = () => {
   const { data: settings } = useSiteSettings();
@@ -17,9 +18,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Col */}
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-ink">
-              {brandName}
-            </h3>
+            <Logo />
             <p className="text-xs text-muted leading-relaxed max-w-xs font-light">
               {footerText}
             </p>
