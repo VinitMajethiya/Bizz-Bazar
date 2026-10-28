@@ -46,14 +46,6 @@ export const AdminPlaceholder: React.FC<PlaceholderProps> = ({ title, phase, des
   );
 };
 
-export const AdminEnquiriesPlaceholder: React.FC = () => (
-  <AdminPlaceholder
-    title="Enquiries & Orders"
-    phase="Phase 5"
-    description="Live enquiry stream, WhatsApp/Instagram conversion to order, customer fulfillment status tracking, courier tracking assignment, and CSV export."
-  />
-);
-
 export const AdminReviewsPlaceholder: React.FC = () => (
   <AdminPlaceholder
     title="Customer Reviews"
