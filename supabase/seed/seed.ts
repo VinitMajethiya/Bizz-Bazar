@@ -495,6 +495,52 @@ async function seed() {
     console.log(`✓ Image uploaded for ${p.slug}`);
   }
 
+  // Seed placeholder testimonials with stable UUIDs (no duplicates on re-run)
+  console.log('\nSeeding placeholder testimonials...');
+  const PLACEHOLDER_TESTIMONIALS = [
+    {
+      id: 'e0000000-0000-0000-0000-000000000001',
+      product_id: null,
+      rating: 5,
+      reviewer_name: 'Riya, Pune',
+      title: 'Daily elegance',
+      review_text: '[placeholder, replace] Looks way more expensive than it is. The anti-tarnish finish really holds up to everyday wear.',
+      status: 'approved' as const,
+      is_offline: true,
+      show_on_home: true,
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000002',
+      product_id: null,
+      rating: 5,
+      reviewer_name: 'Sneha, Mumbai',
+      title: 'Super fast ordering',
+      review_text: '[placeholder, replace] Ordering over DM took two minutes and response was immediate.',
+      status: 'approved' as const,
+      is_offline: true,
+      show_on_home: true,
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000003',
+      product_id: null,
+      rating: 5,
+      reviewer_name: 'Anjali, Kolhapur',
+      title: 'Signature packaging',
+      review_text: '[placeholder, replace] The signature box and care card made it an effortless gift.',
+      status: 'approved' as const,
+      is_offline: true,
+      show_on_home: true,
+    },
+  ];
+
+  for (const t of PLACEHOLDER_TESTIMONIALS) {
+    const { error: revErr } = await supabase.from('reviews').upsert(t, { onConflict: 'id' });
+    if (revErr) {
+      console.warn(`[WARN] Failed to seed testimonial ${t.id}:`, revErr.message);
+    }
+  }
+  console.log('✓ Placeholder testimonials seeded');
+
   console.log('\n✨ Database seeding completed successfully!\n');
 }
 

@@ -24,8 +24,8 @@ const AdminMore = lazy(() => import('@/features/admin/AdminMore'));
 
 // Placeholders for subsequent phases (Reviews, Content)
 const AdminReviews = lazy(() =>
-  import('@/features/admin/AdminPlaceholders').then((m) => ({
-    default: m.AdminReviewsPlaceholder,
+  import('@/features/admin/AdminReviews').then((m) => ({
+    default: m.AdminReviews,
   }))
 );
 const AdminContent = lazy(() =>

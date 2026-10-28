@@ -49,7 +49,7 @@ export const AdminOverview: React.FC = () => {
       label: 'Pending Reviews',
       count: data?.counters.pendingReviews ?? 0,
       icon: Star,
-      to: '/admin/reviews',
+      to: '/admin/reviews?tab=pending',
       highlight: false,
     },
     {

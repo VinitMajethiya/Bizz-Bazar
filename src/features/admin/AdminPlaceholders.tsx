@@ -46,14 +46,6 @@ export const AdminPlaceholder: React.FC<PlaceholderProps> = ({ title, phase, des
   );
 };
 
-export const AdminReviewsPlaceholder: React.FC = () => (
-  <AdminPlaceholder
-    title="Customer Reviews"
-    phase="Phase 6"
-    description="Review moderation dashboard to approve, reject, or feature customer testimonials and offline reviews."
-  />
-);
-
 export const AdminContentPlaceholder: React.FC = () => (
   <AdminPlaceholder
     title="Content & Settings"
