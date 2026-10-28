@@ -161,7 +161,7 @@ export const AdminEnquiryDetail: React.FC = () => {
 
               {/* Channel badge */}
               <span
-                className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono uppercase tracking-wider border rounded-ui ${
+                className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono border rounded-ui ${
                   item.channel === 'whatsapp'
                     ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                     : 'bg-purple-50 text-purple-800 border-purple-200'
@@ -177,7 +177,7 @@ export const AdminEnquiryDetail: React.FC = () => {
 
               {/* Status Tag */}
               <span
-                className={`px-2 py-0.5 text-xs uppercase font-mono tracking-wider rounded-ui ${
+                className={`px-2 py-0.5 text-xs font-mono rounded-ui ${
                   item.status === 'new'
                     ? 'bg-accent/15 text-accent font-medium'
                     : item.status === 'handled'
@@ -282,7 +282,7 @@ export const AdminEnquiryDetail: React.FC = () => {
       {/* Items Table */}
       <div className="bg-surface border border-line rounded-ui overflow-hidden">
         <div className="p-4 border-b border-line bg-bg/40">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Enquiry Items ({item.items.length})
           </h2>
         </div>
@@ -336,7 +336,7 @@ export const AdminEnquiryDetail: React.FC = () => {
       {/* Customer Note (rendered strictly as plain text) */}
       {item.customerNote && (
         <div className="bg-surface border border-line p-4 rounded-ui space-y-1.5">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Customer Gift Note / Custom Request
           </h2>
           <p className="text-xs text-ink/90 font-light italic bg-bg/40 p-3 rounded-ui border border-line/40">
@@ -348,7 +348,7 @@ export const AdminEnquiryDetail: React.FC = () => {
       {/* Internal Notes Box (Autosave on blur with a toast) */}
       <div className="bg-surface border border-line p-4 rounded-ui space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="internal-notes" className="text-xs font-medium text-ink uppercase tracking-wider">
+          <label htmlFor="internal-notes" className="text-xs font-medium text-ink">
             Internal Notes
           </label>
           <span className="text-[10px] text-muted">Autosaves on blur</span>

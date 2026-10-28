@@ -256,7 +256,7 @@ export const MediaPanel: React.FC<MediaPanelProps> = ({
                     height={56}
                   />
                   {img.isHero && (
-                    <span className="absolute bottom-0 inset-x-0 bg-ink/90 text-bg text-[9px] text-center font-mono py-0.5 uppercase tracking-wider">
+                    <span className="absolute bottom-0 inset-x-0 bg-ink/90 text-bg text-[9px] text-center font-mono py-0.5">
                       Hero
                     </span>
                   )}

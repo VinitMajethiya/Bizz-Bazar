@@ -37,7 +37,7 @@ export const AdminMore: React.FC = () => {
               <p className="text-[11px] text-muted font-light">Customise announcement ticker, bio, and policy pages</p>
             </div>
           </div>
-          <span className="text-[10px] text-muted font-mono uppercase bg-bg px-2 py-0.5 border border-line">Phase 7</span>
+          <span className="text-[10px] text-muted font-mono bg-bg px-2 py-0.5 border border-line">Phase 7</span>
         </Link>
 
         <a

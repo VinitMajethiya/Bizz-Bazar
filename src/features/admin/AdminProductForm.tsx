@@ -309,7 +309,7 @@ export const AdminProductForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Core details section */}
         <div className="bg-surface border border-line p-5 sm:p-6 space-y-4">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Essential Details
           </h2>
 
@@ -443,7 +443,7 @@ export const AdminProductForm: React.FC = () => {
 
         {/* Pricing and Stock */}
         <div className="bg-surface border border-line p-5 sm:p-6 space-y-4">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Pricing &amp; Inventory
           </h2>
 
@@ -529,7 +529,7 @@ export const AdminProductForm: React.FC = () => {
 
         {/* Options (Materials & Sizes chips) */}
         <div className="bg-surface border border-line p-5 sm:p-6 space-y-4">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Variants &amp; Options
           </h2>
 
@@ -631,7 +631,7 @@ export const AdminProductForm: React.FC = () => {
         {/* Specifications Key-Value rows */}
         <div className="bg-surface border border-line p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+            <h2 className="text-xs font-medium text-ink">
               Product Specifications
             </h2>
             <button
@@ -686,7 +686,7 @@ export const AdminProductForm: React.FC = () => {
 
         {/* Visibility Toggles */}
         <div className="bg-surface border border-line p-5 sm:p-6 space-y-4">
-          <h2 className="text-xs font-medium text-ink uppercase tracking-wider">
+          <h2 className="text-xs font-medium text-ink">
             Visibility &amp; Status
           </h2>
 

@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
             )}
           </button>
 
-          <nav className="hidden md:flex items-center gap-6 text-[13px] tracking-wide" aria-label="Main Navigation">
+          <nav className="hidden md:flex items-center gap-6 text-[13px]" aria-label="Main Navigation">
             <NavLink
               to="/shop"
               className={({ isActive }) =>

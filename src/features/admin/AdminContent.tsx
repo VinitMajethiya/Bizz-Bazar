@@ -96,7 +96,7 @@ export const AdminContent: React.FC = () => {
           <div className="pt-4 flex justify-end">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-ink text-bg text-xs uppercase tracking-wider font-medium rounded-ui hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-ink text-bg text-xs font-medium rounded-ui hover:bg-accent transition-colors"
             >
               <Save className="w-3.5 h-3.5" /> Save Settings
             </button>

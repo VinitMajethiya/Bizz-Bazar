@@ -197,7 +197,7 @@ export const AdminEnquiries: React.FC = () => {
 
                         {/* Channel Badge */}
                         <span
-                          className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wider border rounded-ui ${
+                          className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-mono border rounded-ui ${
                             item.channel === 'whatsapp'
                               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                               : 'bg-purple-50 text-purple-800 border-purple-200'
@@ -218,7 +218,7 @@ export const AdminEnquiries: React.FC = () => {
 
                         {/* Status Tag */}
                         <span
-                          className={`px-2 py-0.5 text-[10px] uppercase font-mono tracking-wider rounded-ui ${
+                          className={`px-2 py-0.5 text-[10px] font-mono rounded-ui ${
                             item.status === 'new'
                               ? 'bg-accent/15 text-accent font-medium'
                               : item.status === 'handled'

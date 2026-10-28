@@ -159,7 +159,7 @@ export const AdminOverview: React.FC = () => {
                 <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-ink font-medium">{enq.ref}</span>
-                    <span className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wider bg-bg border border-line text-muted">
+                    <span className="px-1.5 py-0.5 text-[10px] font-mono bg-bg border border-line text-muted">
                       {enq.channel}
                     </span>
                     <span

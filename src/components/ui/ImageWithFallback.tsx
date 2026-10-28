@@ -39,7 +39,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         <span className="text-2xl sm:text-3xl font-light text-muted/60 font-serif mb-1">
           {initial}
         </span>
-        <span className="text-[11px] text-muted font-light tracking-wide">
+        <span className="text-[11px] text-muted font-light">
           Photo coming soon
         </span>
       </div>

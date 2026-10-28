@@ -26,7 +26,7 @@ export const AdminPlaceholder: React.FC<PlaceholderProps> = ({ title, phase, des
       </div>
 
       <div className="bg-surface border border-line p-8 text-center space-y-3">
-        <span className="inline-block px-2.5 py-1 text-[10px] font-mono uppercase bg-bg border border-line text-muted">
+        <span className="inline-block px-2.5 py-1 text-[10px] font-mono bg-bg border border-line text-muted">
           {phase}
         </span>
         <h2 className="text-sm font-normal text-ink">Coming in a later phase</h2>
