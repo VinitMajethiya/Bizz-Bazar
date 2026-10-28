@@ -4,6 +4,19 @@ test.describe('Order Flow End-to-End', () => {
   test('adds to bag, changes quantity, adds gift note, and initiates WhatsApp order', async ({
     page,
   }) => {
+    // Mock Supabase site_settings query
+    await page.route('**/rest/v1/site_settings*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          { key: 'brand_name', value: 'By Raya.co' },
+          { key: 'whatsapp_number', value: '919999999999' },
+          { key: 'instagram_handle', value: 'by.raya.co' },
+        ]),
+      });
+    });
+
     // Mock Supabase products query
     await page.route('**/rest/v1/products*', async (route) => {
       await route.fulfill({

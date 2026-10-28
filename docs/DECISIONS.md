@@ -46,11 +46,20 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 014: Browser-side image resizing and WebP transcoding
 2026-10-28. Image uploads are resized in the browser via HTMLCanvasElement to a maximum long edge of 1600px and transcoded to WebP (with JPEG fallback) prior to Supabase Storage upload. Why: guarantees fast upload times on mobile network connections, prevents storage quota bloat, and provides uniform high-DPI imagery across storefront viewports.
 
-## 015: Atomic enquiry-to-order conversion RPC with row-level locking
-2026-10-28. Converted enquiries to orders using an atomic Postgres transaction in `convert_enquiry_to_order` RPC with `for update` row-level locking on the enquiry record. Why: Prevents race conditions and guarantees idempotency so double-taps by an admin or network retries never create duplicate order records or leave inconsistent state. Restricts execute privileges to authenticated admin role.
+## 015: [SUPERSEDED by 017] Atomic enquiry-to-order conversion RPC
+2026-10-28. Originally implemented `convert_enquiry_to_order` RPC with row-level locking. Superseded by Decision 017 and migration 009 (scope change to digital catalogue only).
 
-## 016: Formula injection defense and UTF-8 BOM in CSV exports
-2026-10-28. Neutralized CSV formula injection risks (`=`, `+`, `-`, `@`, `\t`, `\r`) by prepending a single quote (`'`) to cell strings starting with executable characters, and prefixed exports with UTF-8 Byte Order Mark (`\uFEFF`). Why: Prevents spreadsheet formula execution vulnerabilities in Excel and Google Sheets when viewing customer names or addresses, while guaranteeing accurate character decoding in Microsoft Excel across regional Windows environments.
+## 016: [SUPERSEDED by 017] Orders CSV export formula injection defense
+2026-10-28. Originally implemented CSV export for orders. Superseded by Decision 017 removing the orders table.
+
+## 017: Digital catalogue only — no payments, no fulfilment tracking
+2026-10-28. The website is strictly a digital catalogue. Removed online payments, orders table, fulfilment status stepper, tracking numbers, couriers, and shipping addresses. Customers browse and order by chat (WhatsApp or Instagram DM). Every tap saves an enquiry first via `create_enquiry` so no lead is lost. Why: The business operates exclusively via direct DM communication; fulfilment tracking in-app adds unnecessary friction and maintenance overhead.
+
+## 018: Enquiry inbox with new, handled, and dropped statuses
+2026-10-28. The admin manages customer leads as a clean inbox: `new`, `handled`, `dropped`. Enquiries include internal notes with blur autosave, quick status toggle actions, and a one-click "Copy reply message" button formatted for chat. Why: Gives the owner an efficient workflow to triage incoming leads and maintain notes without an e-commerce order management system.
+
+## 019: Deals simplified to percentage and flat coupons
+2026-10-28. Deals are restricted to percentage and flat amount coupons. Complex bundles and fixed-price logic were removed from UI, types, and database queries. Why: Keeps coupon calculations predictable, easy to understand in chat orders, and straightforward for the owner to manage.
 
 ## Template
 ```

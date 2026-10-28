@@ -6,7 +6,7 @@ Design for a phone first. The owner will use this mostly from a phone, so use a 
 Email and password. No sign-up link. Show "Wrong email or password" on failure. After sign in, check `profiles.role = 'admin'`; otherwise sign out and show "This account doesn’t have admin access."
 
 ## Overview
-Counters (tap to open the filtered list): New enquiries, Orders in progress (confirmed, processing, packed, shipped), Pending reviews, Live deals, Low stock or sold out, Drop-alert sign-ups. Below: the five latest enquiries.
+Counters (tap to open the filtered list): New enquiries, Total enquiries, Live products, Low stock or sold out, Pending reviews, Live deals, Drop-alert sign-ups. Below: the five latest enquiries.
 
 ## Products
 **List**: thumbnail, name, category, price, stock status, archived flag. Search by name, filter by category and status. Button "Add product".
@@ -27,31 +27,32 @@ Counters (tap to open the filtered list): New enquiries, Orders in progress (con
 | Sizes | chips input, optional (ring sizes 5 to 9, chain lengths) |
 | Specs | key and value rows: Material, Plating, Stones, Weight, Size |
 | Featured on home | toggle |
-| Archived | toggle; archived products disappear from the store but keep their order history |
+| Archived | toggle; archived products disappear from the store |
 
 **Media panel** (inside the product form): upload one or many, drag to reorder (up and down buttons on mobile), star to set hero, optional "show for material" dropdown, alt text field, delete with confirmation.
 
-**Actions**: Save, Save and add another, Archive, View on site. Warn on leaving with unsaved changes.
+**Actions**: Save, Save and add another, Archive, View on site. Warn on leaving with unsaved changes. Slug changes require confirmation warning about breaking links.
 
 ## Deals
-List with status (live, scheduled, ended, paused). Form: title, type (Percent, Flat amount, Fixed price, Bundle), value, bundle rule (buy X get Y free), coupon code (uppercase, unique, optional), start, end, applies to (all products or pick products), active toggle. Preview line: "20% off Seashell Cuff and 3 more, until 31 Oct". Actions: pause, resume, delete.
+List with status (live, scheduled, ended, paused). Form: title, type (Percent, Flat amount), value, coupon code (uppercase, unique, optional), start, end, applies to (all products or pick products), active toggle. Preview line: "20% off Seashell Cuff and 3 more, until 31 Oct". Actions: pause, resume, delete.
 
-## Enquiries and orders
-**List**: reference, channel icon, items summary, subtotal, age ("12 min ago"), status. Filters: status, channel. New items highlighted. Realtime.
+## Enquiries inbox
+**List**: reference, channel icon, items summary, subtotal, age ("12 min ago"), status. Filters: status filter chips (New, Handled, Dropped, All), channel filter (All, WhatsApp, Instagram), search query by reference or item name. Realtime updates via Supabase realtime.
 
-**Detail**: items table, subtotal, customer note, created time, channel. Buttons: "Convert to order", "Mark as dropped", "Copy reply message".
+**Detail**: items table, subtotal, customer note, created time, channel, internal notes textarea (with blur autosave and toast feedback).
 
-**Convert to order**: dialog asks customer name, phone, shipping address; creates the `orders` row with `total_paise` equal to the enquiry subtotal minus discount (editable for agreed changes), sets enquiry status to `converted`.
-
-**Order detail**: status stepper (confirmed, processing, packed, shipped, delivered, cancelled), courier, tracking number, internal notes, edit customer details. Changing status to shipped prompts for the tracking number.
-
-**CSV export**: orders in the selected date range with columns: order id, enquiry ref, date, customer, phone, address, items, total, status, courier, tracking.
+**Actions**:
+- "Mark handled": sets status to handled.
+- "Reopen": sets status back to new.
+- "Mark as dropped": opens confirmation modal and sets status to dropped.
+- "Copy reply message": copies pre-formatted template:
+  `Hi! Thanks for your enquiry {ref} for {items}. Your total is {subtotal}. We’ll confirm availability and next steps here in chat.`
 
 ## Reviews
 Tabs: Pending, Approved, Rejected. Each card shows product, stars, name, title, text, date. Actions: Approve, Reject, Delete. "Add testimonial": product (optional, blank means site-wide), name, rating, text; saved as approved with `is_offline = true`.
 
 ## Content
-- **Pages**: pick a page (Our story, Privacy, Terms, Shipping and returns), edit title, body (markdown with live preview), meta description. Save shows the public link.
+- **Pages**: pick a page (Our story, Privacy, Terms, How to order), edit title, body (markdown with live preview), meta description. Save shows the public link.
 - **Site settings**: brand name, tagline, WhatsApp number (digits with country code, validated), Instagram handle (no @), support email, business hours, ticker text, hero headline, hero text, hero image upload, story teaser, footer text.
 - **Home content**: guarantees (title and text rows), "On Instagram" strip images.
 - **Leads and messages**: drop-alert sign-ups (copy all, delete) and contact messages (read, delete).

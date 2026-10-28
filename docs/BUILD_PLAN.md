@@ -22,16 +22,16 @@ Zustand cart with persistence and cross-tab sync, drawer, quantity, gift note, `
 Email and password sign in, `AdminGuard` that checks `profiles.role`, mobile-friendly admin layout, overview counters, product list, create and edit form (zod validated), archive, price entered in rupees and stored as paise, image upload with resize, reorder, hero flag, delete, variant link.
 **Accept:** a non-admin account cannot read or write admin data even by calling the API directly; the owner can add a product with photos from a phone.
 
-## Phase 5: enquiries and orders
-Enquiry list with live updates (Supabase realtime), detail view, convert to order, status pipeline, notes, courier and tracking, CSV export.
-**Accept:** a test enquiry from the storefront appears in admin within seconds and can be moved through every status.
+## Phase 5: enquiry inbox
+Enquiries inbox with live updates (Supabase realtime), detail view, search, channel filters, status filter chips (`new`, `handled`, `dropped`), internal notes with autosave, copy pre-formatted reply message, overview counters. (Scope change: catalogue only, no orders table or fulfilment tracking).
+**Accept:** an enquiry placed on the storefront appears in the admin inbox within seconds, can be marked handled or dropped, and internal notes persist.
 
 ## Phase 6: reviews and deals
-Review form with honeypot and validation, pending queue, approve, reject, delete, offline testimonials, average and count on product pages and in JSON-LD. Deals admin, `/deals` page with countdown and copy-code, coupon validation inside `create_enquiry`, bundle display.
-**Accept:** a submitted review is invisible to the public until approved; an expired deal disappears; a valid coupon changes the stored discount.
+Review form with honeypot and validation, pending queue, approve, reject, delete, offline testimonials, average and count on product pages and in JSON-LD. Deals admin (percentage and flat coupon codes only), `/deals` page with copy-code, coupon validation inside `create_enquiry`.
+**Accept:** a submitted review is invisible to the public until approved; a valid coupon code changes the stored enquiry discount.
 
 ## Phase 7: content pages and settings
-Story, contact (form saves to `contact_messages`), privacy, terms, shipping-returns rendered from `pages` markdown (sanitised). Admin editors for pages and for every settings key, hero image upload, guarantees and testimonials editing, drop-alert signup and lead list.
+Story, contact (form saves to `contact_messages`), privacy, terms, how-to-order rendered from `pages` markdown (sanitised). Admin editors for pages and for every settings key, hero image upload, guarantees and testimonials editing, drop-alert signup and lead list.
 **Accept:** the owner can change every visible word on the site from admin.
 
 ## Phase 8: SEO, performance, hardening

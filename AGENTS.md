@@ -3,7 +3,7 @@
 Read this file first in every session. It is the standing brief for this repo.
 
 ## What we are building
-A mobile-first D2C jewellery storefront plus an admin portal. Customers do not pay online. They order by tapping "Order on WhatsApp" or "Order on Instagram". Before the chat opens, an enquiry record is saved so the owner never loses a lead. The owner runs everything (products, photos, deals, enquiries, reviews, page text, contact details) from `/admin` with no code changes.
+A mobile-first D2C digital jewellery catalogue plus an admin portal. There is no online payment, and no delivery or fulfilment tracking anywhere. Customers browse, then order by tapping "Order on WhatsApp" or "Order on Instagram". Before the chat opens, an enquiry record is saved so the owner never loses a lead. The owner manages the catalogue, content, and an enquiry inbox (`new`, `handled`, `dropped`) from `/admin` with no code changes.
 
 The brand is **By Raya.co** (Instagram `by.raya.co`). Tagline from the Instagram bio: "effortless elegance for every occasion. everyday luxury, without the luxury price." The brand currently sells by DM and links a dm2buy page; this site replaces that link. Brand name, handle and tagline live in `site_settings`, never hard-coded.
 

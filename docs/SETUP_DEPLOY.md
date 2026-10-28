@@ -24,7 +24,7 @@ Commit `.env.example` with empty values. `.env.local` is in `.gitignore`.
 
 ## Supabase steps
 1. Create a project (choose the region closest to India, for example Mumbai if available).
-2. Run the migrations in `supabase/migrations/` in order (SQL editor or `supabase db push`).
+2. Run the migrations in `supabase/migrations/` in order or execute the consolidated `supabase/schema.sql` in the Supabase SQL Editor.
 3. Authentication settings: turn **off** "Allow new users to sign up". Create the owner's user from the dashboard (Authentication, Users, Add user) with a strong password.
 4. Promote the owner: `update profiles set role='admin' where id='<user id>';`
 5. Storage: confirm the `product-images` bucket exists and is public, with the admin-only write policies.
@@ -47,6 +47,6 @@ Commit `.env.example` with empty values. `.env.local` is in `.gitignore`.
 
 ## Post-launch routine
 - Check the Supabase dashboard weekly for unusual enquiry volume.
-- Export orders to CSV monthly as a second copy.
+- Back up database records regularly.
 - Rotate the admin password if a device is lost.
 - Update the Instagram link in bio to the new site (replace the old dm2buy link) once the owner confirms the site is ready.

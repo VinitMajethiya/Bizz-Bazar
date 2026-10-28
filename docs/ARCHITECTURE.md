@@ -9,12 +9,12 @@
 | `/deals` | Deals | live deals + their products |
 | `/our-story`, `/about` (redirect) | CMS page | `pages` row |
 | `/contact` | Contact | settings + `contact_messages` insert |
-| `/privacy`, `/terms`, `/shipping-returns` | CMS pages | `pages` row |
+| `/privacy`, `/terms`, `/how-to-order` | CMS pages | `pages` row |
 | `/admin/login` | Sign in | Supabase Auth |
 | `/admin` | Overview | counters |
 | `/admin/products`, `/admin/products/new`, `/admin/products/:id` | Catalogue and media | products, product_images |
 | `/admin/deals` | Deals | deals |
-| `/admin/enquiries`, `/admin/enquiries/:id` | Enquiries and orders | enquiries, orders |
+| `/admin/enquiries`, `/admin/enquiries/:id` | Enquiry inbox | enquiries |
 | `/admin/reviews` | Moderation | reviews |
 | `/admin/content` | Pages, settings, testimonials, leads, messages | pages, site_settings, newsletter_leads, contact_messages |
 | `*` | 404 | none |

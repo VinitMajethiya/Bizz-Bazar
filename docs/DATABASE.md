@@ -8,8 +8,7 @@ create extension if not exists pgcrypto;
 
 create type stock_status  as enum ('in_stock','low_stock','sold_out');
 create type chat_channel  as enum ('whatsapp','instagram');
-create type enquiry_status as enum ('new','converted','dropped');
-create type order_status  as enum ('confirmed','processing','packed','shipped','delivered','cancelled');
+create type enquiry_status as enum ('new','handled','dropped');
 create type review_status as enum ('pending','approved','rejected');
 create type discount_type as enum ('percent','flat','fixed_price','bundle');
 
@@ -90,27 +89,13 @@ create table enquiries (
   coupon_code text,
   channel chat_channel not null,
   customer_note text,
+  internal_notes text,
   status enquiry_status not null default 'new',
   created_at timestamptz not null default now()
 );
 create index on enquiries (status, created_at desc);
-
-create table orders (
-  id uuid primary key default gen_random_uuid(),
-  enquiry_id uuid unique references enquiries,
-  customer_name text,
-  customer_phone text,
-  shipping_address text,
-  courier text,
-  tracking_number text,
-  internal_notes text,
-  status order_status not null default 'confirmed',
-  total_paise integer not null,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
 ```
-Note: enquiries use `new / converted / dropped`. The fulfilment pipeline lives on `orders`. In the admin UI show them as one pipeline: New (enquiry) then Confirmed, Processing, Packed, Shipped, Delivered, Cancelled.
+Note: Digital catalogue scope uses an enquiry inbox (`new / handled / dropped`). There is no online payment, orders table, or fulfilment tracking. The owner reviews incoming enquiries and marks them handled or dropped with internal notes.
 
 ## 004 reviews, content, leads
 ```sql
@@ -237,38 +222,24 @@ create policy "admin delete images" on storage.objects for delete using (bucket_
 ```
 Client-side, resize uploads to 1600px on the long edge and re-encode as WebP or JPEG before upload.
 
-## 008 realtime, orders updated_at trigger, and convert_enquiry_to_order RPC
+## 008 realtime for enquiries
 ```sql
 -- Realtime publications for admin stream
 alter publication supabase_realtime add table public.enquiries;
+```
 
--- Order updated_at trigger
-create or replace function set_updated_at() returns trigger language plpgsql as $$
-begin new.updated_at = now(); return new; end $$;
-create trigger trigger_orders_updated_at before update on public.orders for each row execute function set_updated_at();
+## 009 drop orders table and convert to enquiry inbox
+```sql
+-- Remove conversion RPC and orders table
+drop function if exists convert_enquiry_to_order(uuid, text, text, text, integer);
+drop table if exists orders cascade;
+drop type if exists order_status cascade;
 
--- Transactional conversion with row locking and admin security
-create or replace function convert_enquiry_to_order(
-  p_enquiry_id uuid, p_name text, p_phone text, p_address text, p_total_paise integer
-) returns jsonb language plpgsql security definer set search_path = public as $$
-declare v_enquiry enquiries%rowtype; v_order_id uuid;
-begin
-  if not is_admin() then raise exception 'unauthorized: admin access required'; end if;
-  select * into v_enquiry from enquiries where id = p_enquiry_id for update;
-  if not found then raise exception 'enquiry not found'; end if;
-  if v_enquiry.status = 'converted' then raise exception 'enquiry has already been converted to an order'; end if;
-  if v_enquiry.status = 'dropped' then raise exception 'cannot convert a dropped enquiry'; end if;
+-- Rename converted to handled
+alter type enquiry_status rename value 'converted' to 'handled';
 
-  insert into orders (enquiry_id, customer_name, customer_phone, shipping_address, total_paise, status)
-    values (p_enquiry_id, trim(p_name), trim(p_phone), trim(p_address), p_total_paise, 'confirmed')
-    returning id into v_order_id;
-
-  update enquiries set status = 'converted' where id = p_enquiry_id;
-
-  return jsonb_build_object('order_id', v_order_id, 'enquiry_id', p_enquiry_id, 'status', 'confirmed', 'total_paise', p_total_paise);
-end $$;
-revoke execute on function convert_enquiry_to_order(uuid, text, text, text, integer) from public, anon;
-grant execute on function convert_enquiry_to_order(uuid, text, text, text, integer) to authenticated;
+-- Add internal notes for admin note-taking
+alter table enquiries add column if not exists internal_notes text;
 ```
 
 ## Settings keys

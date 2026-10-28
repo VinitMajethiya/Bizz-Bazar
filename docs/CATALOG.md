@@ -27,10 +27,10 @@ Photo files are the uploaded WhatsApp images. Rename them to the slug shown and 
 - Material: anti-tarnish plated brass or stainless steel, nickel-free
 - Care: keep dry, avoid perfume and lotion, store in the box
 - Packaging: gift box and care card included
-- Shipping: dispatch in 24 to 48 hours, 7-day exchange on manufacturing defects
+- Ordering: browse, then tap to order on WhatsApp or Instagram DM
 
 ## Seed pages and settings
 - Settings: `brand_name` By Raya.co, `whatsapp_number` 919999999999 (placeholder, owner to supply), `instagram_handle` by.raya.co, `support_email` hello@byraya.co (placeholder), `tagline` "Effortless elegance for every occasion", `ticker_text` "Everyday luxury, without the luxury price. DM to order.", `hero_headline` "Effortless elegance for every occasion", `hero_text` "Everyday luxury, without the luxury price. Pick your piece and DM us to order."
-- Pages: `our-story`, `privacy`, `terms`, `shipping-returns` with short placeholder text the owner will replace.
+- Pages: `our-story`, `privacy`, `terms`, `how-to-order` with short placeholder text the owner will replace.
 - Sample deal for testing only: code FIRST10, 10 percent, active. Ask the owner before launching any real offer.
 - Testimonials: three placeholders (Riya Pune, Sneha Mumbai, Anjali Kolhapur), stored as approved offline testimonials.

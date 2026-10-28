@@ -4,6 +4,7 @@ import { buildOrderMessage, encodeForWhatsApp } from './messageBuilder';
 import { useOrderModalStore } from './orderModalStore';
 import { useToastStore } from '../../components/ui/toastStore';
 import { useCartStore, type CartLine } from '../cart/cartStore';
+import { DEFAULT_SITE_SETTINGS } from '../../lib/api/settings';
 import type { SiteSettings } from '../../lib/types';
 
 let isSubmitting = false;
@@ -39,10 +40,12 @@ export async function placeOrder({
     return false;
   }
 
-  // Validate contact channel in settings
-  const brandName = settings?.brand_name || 'By Raya.co';
-  const whatsappNumber = settings?.whatsapp_number ? cleanWhatsAppNumber(settings.whatsapp_number) : '';
-  const instagramHandle = settings?.instagram_handle ? settings.instagram_handle.replace(/^@/, '') : '';
+  // Validate contact channel in settings (fallback to default settings if loading or unset)
+  const brandName = settings?.brand_name || DEFAULT_SITE_SETTINGS.brand_name;
+  const rawWhatsapp = settings?.whatsapp_number || DEFAULT_SITE_SETTINGS.whatsapp_number;
+  const rawInstagram = settings?.instagram_handle || DEFAULT_SITE_SETTINGS.instagram_handle;
+  const whatsappNumber = rawWhatsapp ? cleanWhatsAppNumber(rawWhatsapp) : '';
+  const instagramHandle = rawInstagram ? rawInstagram.replace(/^@/, '') : '';
 
   if (channel === 'whatsapp' && !whatsappNumber) {
     showToast('WhatsApp ordering is currently unavailable. Please check back shortly.', 'error');

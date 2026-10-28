@@ -22,7 +22,7 @@ ProductCard badges and sale price, sold-out disables ordering, filter tabs, sort
 4. Sold-out product cannot be ordered.
 5. Submit a review: not visible publicly. Approve in admin: visible.
 6. Admin: sign in, create a product with two images, see it on the shop, change its price, see the change, archive it, see it disappear.
-7. Admin: convert an enquiry to an order, move it through every status, export CSV.
+7. Admin: open enquiries inbox, filter by status and channel, search by ref, save internal notes, mark handled or dropped, copy pre-formatted reply message.
 8. Edit the ticker and WhatsApp number in settings, see the storefront change after refresh.
 9. Non-admin user cannot open `/admin` content.
 

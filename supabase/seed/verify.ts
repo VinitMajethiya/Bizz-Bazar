@@ -62,7 +62,8 @@ async function verify() {
     if (!prodErr && prods && prods.length > 0 && !settErr && settings && settings.length > 0) {
       console.log('✅ PASS: Anon can read live products and settings');
     } else {
-      console.error('❌ FAIL: Anon could not read products or settings:', prodErr?.message || settErr?.message);
+      const reason = prodErr?.message || settErr?.message || `Empty rows (products: ${prods?.length ?? 0}, settings: ${settings?.length ?? 0}). Has seed been run?`;
+      console.error('❌ FAIL: Anon could not read products or settings:', reason);
       allPassed = false;
     }
   } catch (e) {
