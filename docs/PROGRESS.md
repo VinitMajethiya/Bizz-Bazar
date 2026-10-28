@@ -141,22 +141,45 @@ Phase: Phase 6 complete (Customer reviews, moderation queue, and home testimonia
     - 6 Playwright E2E tests passing on both mobile (390x844) and desktop (1280x800) covering storefront order flow, enquiry triage, and review submission & admin moderation.
     - Production build (`npm run build`) and strict lint (`npm run lint`) pass with 0 errors/warnings.
 
-## Acceptance Criteria Verification (Phase 6)
-- **Storefront reviews display accurate stats from database**: PASS. View `product_review_stats` feeds average rating and count.
-- **Write review form enforces anti-spam and moderation**: PASS. Honeypot, 3s delay timer, 24h duplicate guard, and pending status enforced by RLS.
-- **Admin moderation queue allows Show, Hide, Delete, and Home Toggle**: PASS. Verified in unit tests and Playwright E2E.
-- **Home page testimonials gated to approved + show_on_home**: PASS. Completely hidden if 0; displays up to 6 approved cards.
-- **Zero deals, discounts, or coupons remain**: PASS. Deals table dropped, all discount logic and mentions removed.
+## 2026-10-28 (Phase 7: Content Pages, Markdown CMS, and Site Settings Portal)
+- **Status**: Completed Phase 7.
+- **What Changed**:
+  - **Zero-Dependency Markdown Renderer (`MarkdownRenderer.tsx`)**:
+    - Created lightweight, safe markdown parser and renderer generating semantic React elements (H1-H4, bullet lists `-` and `*`, bold `**`, italic `*`, links, paragraphs).
+    - No `dangerouslySetInnerHTML`: immune to XSS; raw HTML tags are escaped and rendered as text.
+    - Dangerous URL schemes (`javascript:`, `vbscript:`, `data:`) are detected and neutralized to safe `#` links with `rel="noopener noreferrer"`.
+  - **Dynamic Storefront CMS Pages (`/our-story`, `/how-to-order`, `/privacy`, `/terms`)**:
+    - Converted all policy and brand narrative pages from hard-coded drafts to dynamic database queries via `useCMSPage(slug)`.
+    - Resilient fallback: Seamlessly falls back to `docs/CONTENT.md` drafts if database row is empty or Supabase is unconfigured.
+    - Dynamic page title and SEO meta descriptions injected via `react-helmet-async`.
+  - **Storefront Contact Page (`/contact`)**:
+    - Dynamically binds direct messaging channels to `useSiteSettings()`: WhatsApp (`wa.me/<number>`), Instagram DM (`ig.me/m/<handle>`), support email, and business hours.
+    - Direct contact form connected to `contact_messages` table with honeypot bot trap (`#website` field silently discards bot spam without database writes).
+    - Friendly thank-you confirmation state with "Send another note" toggle.
+  - **Admin Content & Site Settings Portal (`/admin/content`)**:
+    - Tab 1 `Site Settings`: Complete form managing brand name, tagline, validated WhatsApp number (`cleanWhatsAppNumber`), Instagram handle without `@`, support email, business hours, announcement ticker text, hero headline/subheadline, hero image upload to `product-images` storage bucket, story teaser, footer text, and 4 editable storefront guarantees with icon selectors.
+    - Tab 2 `CMS Pages`: Page selector dropdown (`our-story`, `how-to-order`, `privacy`, `terms`), title input, SEO meta description with 160-character counter, split-screen markdown editor with live preview using `MarkdownRenderer`, save action with toast notification, and "View live page" link.
+    - Tab 3 `Leads & Messages`: Real-time viewer for Drop-Alert subscribers (`newsletter_leads`) with one-click "Copy All Contacts" helper and delete action; Contact messages inbox (`contact_messages`) with date formatting, contact badge, full customer message, and delete action.
+    - Router integration: Mounted `/admin/content` in `src/app/router.tsx`, cleaned up and removed obsolete `AdminPlaceholders.tsx`.
+- **Automated Tests**:
+  - 87 unit tests passing across 17 test suites in Vitest (added `src/features/pages/pages.test.tsx` testing markdown rendering, XSS stripping, contact form validation, and bot honeypot protection).
+  - 12 Playwright E2E tests passing across both mobile (390x844) and desktop (1280x800) projects covering storefront order flow, enquiry inbox triage, review moderation, contact form submission, dynamic CMS page rendering, and admin content management.
+  - Production build (`npm run build`) and strict lint (`npm run lint`) pass with 0 errors/warnings.
+
+## Acceptance Criteria Verification (Phase 7)
+- **CMS pages dynamically render from database**: PASS. Verified `/our-story`, `/how-to-order`, `/privacy`, `/terms` load via `useCMSPage(slug)` and render with `MarkdownRenderer`.
+- **Markdown renderer safe and functional**: PASS. Headings, bullet lists, bold, italic, and safe links verified in unit tests; malicious `javascript:` schemes neutralized.
+- **Contact form captures inquiries with bot honeypot**: PASS. Submissions insert to `contact_messages`; filled honeypot discards silently.
+- **Admin can manage settings, hero photography, CMS pages, and view leads**: PASS. Full three-tab portal in `/admin/content` verified in Playwright E2E.
 
 ## Untested Items
-- Live remote database verification (`npm run verify:admin`) pending owner configuring `TEST_` user credentials in `.env.local` and running `npm run seed`.
+- Remote database execution of `npm run verify:admin` pending owner adding `TEST_` credentials to `.env.local`.
 
 ## Next
-- Phase 7: Content & Site Settings CMS (manage announcement ticker, hero banner, our story, policy pages, Instagram bio sync).
+- Phase 8: SEO, Performance & Launch Readiness (sitemap generation, robots.txt, JSON-LD structured data, Open Graph tags, audit and bundle optimization).
 
 ## Decisions made
-- Decision 014: Browser-side image resizing via HTMLCanvasElement to 1600px long edge with WebP transcoding prior to storage upload.
-- Decision 017: Digital catalogue only — no payments, no fulfilment tracking.
-- Decision 018: Enquiry inbox with new, handled, and dropped statuses.
+- Decision 021: Reviews moderation, anti-spam guards, and home page visibility gating.
+- Decision 022: Dynamic CMS pages, zero-dependency MarkdownRenderer, and unified admin content portal.
 - Decision 020: No coupons or deals; the site is a catalogue.
 - Decision 021: Reviews moderation, anti-spam guards, and home page visibility gating.
