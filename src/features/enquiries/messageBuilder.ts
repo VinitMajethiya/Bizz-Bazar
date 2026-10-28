@@ -49,3 +49,4 @@ export function buildOrderMessage({
 export function encodeForWhatsApp(message: string): string {
   return encodeURIComponent(message);
 }
+

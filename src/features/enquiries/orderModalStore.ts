@@ -24,3 +24,4 @@ export const useOrderModalStore = create<OrderModalStore>((set) => ({
   openModal: (data) => set({ ...data, isOpen: true }),
   closeModal: () => set({ isOpen: false }),
 }));
+

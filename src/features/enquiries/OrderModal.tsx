@@ -11,6 +11,7 @@ export const OrderModal: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -55,23 +56,56 @@ export const OrderModal: React.FC = () => {
   if (!isOpen) return null;
 
   const handleCopy = async () => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+    let success = false;
+
+    // 1. Try modern navigator.clipboard.writeText if available in a secure context
+    if (
+      typeof navigator !== 'undefined' &&
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === 'function'
+    ) {
+      try {
         await navigator.clipboard.writeText(message);
-      } else {
-        // Fallback for older browsers
-        const textarea = document.createElement('textarea');
-        textarea.value = message;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+        success = true;
+      } catch {
+        // Permission denied or non-secure context; will fall through to execCommand
+        success = false;
       }
+    }
+
+    // 2. Fallback to readonly textarea auto-select + execCommand('copy')
+    if (!success) {
+      try {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          textareaRef.current.select();
+          textareaRef.current.setSelectionRange(0, message.length);
+          success = document.execCommand('copy');
+        } else {
+          const tempArea = document.createElement('textarea');
+          tempArea.value = message;
+          tempArea.setAttribute('readonly', '');
+          tempArea.style.position = 'fixed';
+          tempArea.style.left = '-9999px';
+          document.body.appendChild(tempArea);
+          tempArea.select();
+          success = document.execCommand('copy');
+          document.body.removeChild(tempArea);
+        }
+      } catch {
+        success = false;
+      }
+    }
+
+    // Only show the toast if a copy actually happened
+    if (success) {
       setCopied(true);
       showToast('Order copied. Paste it in the chat.', 'success');
       setTimeout(() => setCopied(false), 2500);
-    } catch {
-      showToast('Could not copy automatically. Please select and copy the text below.', 'info');
+    } else {
+      // Keep textarea focused and selected so the user can easily copy manually
+      textareaRef.current?.focus();
+      textareaRef.current?.select();
     }
   };
 
@@ -122,8 +156,20 @@ export const OrderModal: React.FC = () => {
               We’ve saved your enquiry! Copy your order details below, then open Instagram and paste the message into our DM.
             </p>
 
-            <div className="relative bg-surface border border-line p-3.5 text-xs text-ink font-light leading-relaxed whitespace-pre-wrap select-all max-h-44 overflow-y-auto">
-              {message}
+            <div>
+              <label htmlFor="instagram-order-message" className="sr-only">
+                Order message
+              </label>
+              <textarea
+                id="instagram-order-message"
+                ref={textareaRef}
+                readOnly
+                value={message}
+                rows={6}
+                aria-label="Order message to copy"
+                className="w-full bg-surface border border-line p-3 text-xs text-ink font-light leading-relaxed select-all resize-none focus:outline-none focus:border-ink font-mono"
+                onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+              />
             </div>
 
             <div className="flex flex-col gap-2 pt-1">
@@ -159,7 +205,8 @@ export const OrderModal: React.FC = () => {
         ) : (
           <div className="space-y-4">
             <p className="text-xs text-muted font-light leading-relaxed">
-              Your order enquiry has been registered under reference <span className="font-mono text-ink">{orderRef}</span>. Tap below to send your prefilled order message in WhatsApp chat.
+              Your order enquiry has been registered under reference{' '}
+              <span className="font-mono text-ink">{orderRef}</span>. Tap below to send your prefilled order message in WhatsApp chat.
             </p>
 
             <button

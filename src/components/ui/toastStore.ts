@@ -13,3 +13,4 @@ export const useToastStore = create<ToastState>((set) => ({
   showToast: (message, type = 'info') => set({ message, type }),
   hideToast: () => set({ message: null }),
 }));
+

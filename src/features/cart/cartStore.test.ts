@@ -150,3 +150,4 @@ describe('Cart Store', () => {
     expect(state.note).toBe('Sync note');
   });
 });
+

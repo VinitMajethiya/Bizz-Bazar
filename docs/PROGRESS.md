@@ -1,4 +1,3 @@
-# PROGRESS.md
 
 Updated by the agent at the end of every session.
 
@@ -64,3 +63,4 @@ Phase: Phase 3 complete (Cart and enquiry flow). Ready for Phase 4 (Admin founda
 - Decision 008 reaffirmed: WhatsApp uses direct navigation with fallback modal; Instagram uses explicit copy modal with "Open Instagram" button to guarantee clipboard reliability.
 - Decision 009 reaffirmed: Coupons deferred until Phase 6 deals engine.
 - Extracted toast store into `src/components/ui/toastStore.ts` for clean Fast Refresh and decoupled invocation across asynchronous event handlers.
+

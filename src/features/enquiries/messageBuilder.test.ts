@@ -66,3 +66,4 @@ describe('Message Builder', () => {
     expect(decodeURIComponent(encoded)).toBe(message);
   });
 });
+

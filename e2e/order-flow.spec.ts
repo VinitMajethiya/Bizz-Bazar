@@ -77,10 +77,10 @@ test.describe('Order Flow End-to-End', () => {
     // 4. Change quantity in drawer (stepper from 1 to 2)
     const increaseBtn = drawer.getByRole('button', { name: /increase quantity/i });
     await increaseBtn.click();
-    await expect(drawer.getByText('₹998')).toBeVisible();
+    await expect(drawer.getByText('₹998').first()).toBeVisible();
 
     // 5. Add gift note
-    const giftNoteInput = drawer.getByLabelText(/gift note or custom instructions/i);
+    const giftNoteInput = drawer.getByLabel(/gift note or custom instructions/i);
     await giftNoteInput.fill('Happy birthday Riya');
 
     // 6. Monitor WhatsApp navigation

@@ -58,3 +58,4 @@ export async function createEnquiryRpc(
   // The RPC returns jsonb with { ref, items, subtotal_paise, discount_paise }
   return data as unknown as CreateEnquiryResult;
 }
+
