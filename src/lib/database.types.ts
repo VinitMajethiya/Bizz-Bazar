@@ -8,14 +8,7 @@ export type Json =
 
 export type StockStatus = 'in_stock' | 'low_stock' | 'sold_out';
 export type ChatChannel = 'whatsapp' | 'instagram';
-export type EnquiryStatus = 'new' | 'converted' | 'dropped';
-export type OrderStatus =
-  | 'confirmed'
-  | 'processing'
-  | 'packed'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled';
+export type EnquiryStatus = 'new' | 'handled' | 'dropped';
 export type ReviewStatus = 'pending' | 'approved' | 'rejected';
 export type DiscountType = 'percent' | 'flat' | 'fixed_price' | 'bundle';
 
@@ -199,6 +192,7 @@ export interface Database {
           coupon_code: string | null;
           channel: ChatChannel;
           customer_note: string | null;
+          internal_notes: string | null;
           status: EnquiryStatus;
           created_at: string;
         };
@@ -211,6 +205,7 @@ export interface Database {
           coupon_code?: string | null;
           channel: ChatChannel;
           customer_note?: string | null;
+          internal_notes?: string | null;
           status?: EnquiryStatus;
           created_at?: string;
         };
@@ -223,71 +218,11 @@ export interface Database {
           coupon_code?: string | null;
           channel?: ChatChannel;
           customer_note?: string | null;
+          internal_notes?: string | null;
           status?: EnquiryStatus;
           created_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'orders_enquiry_id_fkey';
-            columns: ['id'];
-            isOneToOne: false;
-            referencedRelation: 'orders';
-            referencedColumns: ['enquiry_id'];
-          },
-        ];
-      };
-      orders: {
-        Row: {
-          id: string;
-          enquiry_id: string | null;
-          customer_name: string | null;
-          customer_phone: string | null;
-          shipping_address: string | null;
-          courier: string | null;
-          tracking_number: string | null;
-          internal_notes: string | null;
-          status: OrderStatus;
-          total_paise: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          enquiry_id?: string | null;
-          customer_name?: string | null;
-          customer_phone?: string | null;
-          shipping_address?: string | null;
-          courier?: string | null;
-          tracking_number?: string | null;
-          internal_notes?: string | null;
-          status?: OrderStatus;
-          total_paise: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          enquiry_id?: string | null;
-          customer_name?: string | null;
-          customer_phone?: string | null;
-          shipping_address?: string | null;
-          courier?: string | null;
-          tracking_number?: string | null;
-          internal_notes?: string | null;
-          status?: OrderStatus;
-          total_paise?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'orders_enquiry_id_fkey';
-            columns: ['enquiry_id'];
-            isOneToOne: true;
-            referencedRelation: 'enquiries';
-            referencedColumns: ['id'];
-          },
-        ];
+        Relationships: [];
       };
       reviews: {
         Row: {
@@ -429,27 +364,11 @@ export interface Database {
           discount_paise: number;
         };
       };
-      convert_enquiry_to_order: {
-        Args: {
-          p_enquiry_id: string;
-          p_name: string;
-          p_phone: string;
-          p_address: string;
-          p_total_paise: number;
-        };
-        Returns: {
-          order_id: string;
-          enquiry_id: string;
-          status: OrderStatus;
-          total_paise: number;
-        };
-      };
     };
     Enums: {
       stock_status: StockStatus;
       chat_channel: ChatChannel;
       enquiry_status: EnquiryStatus;
-      order_status: OrderStatus;
       review_status: ReviewStatus;
       discount_type: DiscountType;
     };

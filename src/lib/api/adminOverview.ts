@@ -2,13 +2,13 @@ import { supabase, isSupabaseConfigured } from '../supabase';
 import type { ChatChannel, EnquiryStatus } from '../database.types';
 
 export interface AdminCounters {
+  newEnquiries: number;
+  totalEnquiries: number;
   liveProducts: number;
   lowStockOrSoldOut: number;
-  dropAlertLeads: number;
-  newEnquiries: number;
-  ordersInProgress: number;
   pendingReviews: number;
   liveDeals: number;
+  dropAlertLeads: number;
 }
 
 export interface AdminEnquiryItemSummary {
@@ -35,13 +35,13 @@ export async function fetchAdminOverviewStats(): Promise<{
   if (!isSupabaseConfigured) {
     return {
       counters: {
+        newEnquiries: 0,
+        totalEnquiries: 0,
         liveProducts: 0,
         lowStockOrSoldOut: 0,
-        dropAlertLeads: 0,
-        newEnquiries: 0,
-        ordersInProgress: 0,
         pendingReviews: 0,
         liveDeals: 0,
+        dropAlertLeads: 0,
       },
       latestEnquiries: [],
     };
@@ -71,11 +71,10 @@ export async function fetchAdminOverviewStats(): Promise<{
     .select('id', { count: 'exact', head: true })
     .eq('status', 'new');
 
-  // 5. Orders in progress count (status in confirmed, processing, packed, shipped)
-  const { count: inProgressOrdersCount } = await supabase
-    .from('orders')
-    .select('id', { count: 'exact', head: true })
-    .in('status', ['confirmed', 'processing', 'packed', 'shipped']);
+  // 5. Total enquiries count
+  const { count: totalEnquiriesCount } = await supabase
+    .from('enquiries')
+    .select('id', { count: 'exact', head: true });
 
   // 6. Recent enquiries list
   const { data: recentEnquiries } = await supabase
@@ -85,7 +84,7 @@ export async function fetchAdminOverviewStats(): Promise<{
     .limit(5);
 
   const formattedEnquiries: AdminLatestEnquiry[] = (recentEnquiries || []).map((e) => {
-    let itemsStr = 'Order items';
+    let itemsStr = 'Enquiry items';
     if (Array.isArray(e.items_json)) {
       itemsStr = (e.items_json as unknown as AdminEnquiryItemSummary[])
         .map((item) => `${item.name}${item.options?.material ? ` (${item.options.material})` : ''} x${item.qty}`)
@@ -106,13 +105,13 @@ export async function fetchAdminOverviewStats(): Promise<{
 
   return {
     counters: {
+      newEnquiries: newEnquiriesCount || 0,
+      totalEnquiries: totalEnquiriesCount || 0,
       liveProducts: liveProductsCount || 0,
       lowStockOrSoldOut: lowStockCount || 0,
-      dropAlertLeads: leadsCount || 0,
-      newEnquiries: newEnquiriesCount || 0,
-      ordersInProgress: inProgressOrdersCount || 0,
-      pendingReviews: 0, // Until Phase 7
+      pendingReviews: 0, // Until Phase 6
       liveDeals: 0, // Until Phase 6
+      dropAlertLeads: leadsCount || 0,
     },
     latestEnquiries: formattedEnquiries,
   };

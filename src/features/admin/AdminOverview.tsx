@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Inbox,
-  ShoppingCart,
+  MessageCircle,
   Star,
   Tag,
   AlertTriangle,
@@ -19,6 +19,20 @@ export const AdminOverview: React.FC = () => {
 
   const counters = [
     {
+      label: 'New Enquiries',
+      count: data?.counters.newEnquiries ?? 0,
+      icon: Inbox,
+      to: '/admin/enquiries?status=new',
+      highlight: (data?.counters.newEnquiries ?? 0) > 0,
+    },
+    {
+      label: 'Total Enquiries',
+      count: data?.counters.totalEnquiries ?? 0,
+      icon: MessageCircle,
+      to: '/admin/enquiries?status=all',
+      highlight: false,
+    },
+    {
       label: 'Live Products',
       count: data?.counters.liveProducts ?? 0,
       icon: Package,
@@ -31,20 +45,6 @@ export const AdminOverview: React.FC = () => {
       icon: AlertTriangle,
       to: '/admin/products?status=low_stock',
       highlight: (data?.counters.lowStockOrSoldOut ?? 0) > 0,
-    },
-    {
-      label: 'New Enquiries',
-      count: data?.counters.newEnquiries ?? 0,
-      icon: Inbox,
-      to: '/admin/enquiries?status=new',
-      highlight: (data?.counters.newEnquiries ?? 0) > 0,
-    },
-    {
-      label: 'Orders in Progress',
-      count: data?.counters.ordersInProgress ?? 0,
-      icon: ShoppingCart,
-      to: '/admin/enquiries?status=confirmed',
-      highlight: (data?.counters.ordersInProgress ?? 0) > 0,
     },
     {
       label: 'Pending Reviews',
