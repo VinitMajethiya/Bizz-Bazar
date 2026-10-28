@@ -247,13 +247,8 @@ export const AdminEnquiries: React.FC = () => {
                     <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 pt-2 sm:pt-0 border-line/40 shrink-0">
                       <div className="text-left sm:text-right">
                         <p className="text-sm font-medium text-ink">
-                          {formatINR(item.totalPaise)}
+                          {formatINR(item.subtotalPaise)}
                         </p>
-                        {item.discountPaise > 0 && (
-                          <p className="text-[10px] text-emerald-600 font-light">
-                            Discount: -{formatINR(item.discountPaise)}
-                          </p>
-                        )}
                       </div>
                       <span className="text-[11px] text-accent flex items-center gap-1 sm:mt-1 hover:underline">
                         View <ExternalLink className="w-3 h-3 stroke-[1.5]" />

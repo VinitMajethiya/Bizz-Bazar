@@ -397,23 +397,7 @@ async function seed() {
   }
   console.log('✓ CMS pages seeded');
 
-  // 4. Seed Deal FIRST10 (inactive for now)
-  console.log('\n🏷️ Seeding sample deal (FIRST10, inactive)...');
-  const { error: dealError } = await supabase.from('deals').upsert(
-    {
-      title: 'Welcome 10% Off',
-      code: 'FIRST10',
-      discount_type: 'percent',
-      discount_value: 10,
-      active: false,
-      applicable_products: null,
-    },
-    { onConflict: 'code' }
-  );
-  if (dealError) console.error('Error seeding deal FIRST10:', dealError.message);
-  else console.log('✓ FIRST10 deal seeded (inactive)');
-
-  // 5. Seed Testimonials
+  // 4. Seed Testimonials
   console.log('\n⭐ Seeding offline testimonials...');
   for (const t of TESTIMONIALS) {
     const { data: existing } = await supabase

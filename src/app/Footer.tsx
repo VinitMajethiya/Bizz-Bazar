@@ -67,11 +67,6 @@ export const Footer: React.FC = () => {
                   Gift Sets
                 </Link>
               </li>
-              <li>
-                <Link to="/deals" className="hover:text-ink transition-colors">
-                  Deals &amp; Sets
-                </Link>
-              </li>
             </ul>
           </div>
 

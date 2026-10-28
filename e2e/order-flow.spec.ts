@@ -70,7 +70,6 @@ test.describe('Order Flow End-to-End', () => {
             },
           ],
           subtotal_paise: 99800,
-          discount_paise: 0,
         }),
       });
     });

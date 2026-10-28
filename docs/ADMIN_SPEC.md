@@ -6,7 +6,7 @@ Design for a phone first. The owner will use this mostly from a phone, so use a 
 Email and password. No sign-up link. Show "Wrong email or password" on failure. After sign in, check `profiles.role = 'admin'`; otherwise sign out and show "This account doesn’t have admin access."
 
 ## Overview
-Counters (tap to open the filtered list): New enquiries, Total enquiries, Live products, Low stock or sold out, Pending reviews, Live deals, Drop-alert sign-ups. Below: the five latest enquiries.
+Counters (tap to open the filtered list): New enquiries, Total enquiries, Live products, Low stock or sold out, Pending reviews, Drop-alert sign-ups. Below: the five latest enquiries.
 
 ## Products
 **List**: thumbnail, name, category, price, stock status, archived flag. Search by name, filter by category and status. Button "Add product".
@@ -32,9 +32,6 @@ Counters (tap to open the filtered list): New enquiries, Total enquiries, Live p
 **Media panel** (inside the product form): upload one or many, drag to reorder (up and down buttons on mobile), star to set hero, optional "show for material" dropdown, alt text field, delete with confirmation.
 
 **Actions**: Save, Save and add another, Archive, View on site. Warn on leaving with unsaved changes. Slug changes require confirmation warning about breaking links.
-
-## Deals
-List with status (live, scheduled, ended, paused). Form: title, type (Percent, Flat amount), value, coupon code (uppercase, unique, optional), start, end, applies to (all products or pick products), active toggle. Preview line: "20% off Seashell Cuff and 3 more, until 31 Oct". Actions: pause, resume, delete.
 
 ## Enquiries inbox
 **List**: reference, channel icon, items summary, subtotal, age ("12 min ago"), status. Filters: status filter chips (New, Handled, Dropped, All), channel filter (All, WhatsApp, Instagram), search query by reference or item name. Realtime updates via Supabase realtime.

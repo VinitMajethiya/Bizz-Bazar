@@ -13,7 +13,6 @@ Default recommendation: option 1 for v1.
 | Shop | `Shop jewellery | {brand}` | "Earrings, bracelets, necklaces and gift sets. Order by DM." |
 | Category | `{Category} | {brand}` | "Shop {category} from {brand}." |
 | Product | `{name} | {category} | {brand}` | first 150 characters of description + price |
-| Deals | `Deals and offers | {brand}` | "Live offers and coupon codes." |
 | CMS pages | `{page title} | {brand}` | `pages.meta_description` |
 
 Every page gets: canonical URL, `og:title`, `og:description`, `og:image` (product hero or the logo), `og:type` (`product` or `website`), `twitter:card=summary_large_image`. Titles under 60 characters, descriptions under 160.
@@ -45,7 +44,7 @@ Store on the home page: `@type: JewelryStore`, name, url, logo, `sameAs: ["https
 
 ## Files
 - `public/robots.txt`: allow all, disallow `/admin`, link to the sitemap.
-- `scripts/sitemap.ts` generates `public/sitemap.xml` with home, shop, deals, CMS pages and every non-archived product (`lastmod` from `updated_at`).
+- `scripts/sitemap.ts` generates `public/sitemap.xml` with home, shop, CMS pages and every non-archived product (`lastmod` from `updated_at`).
 - Add `<meta name="robots" content="noindex">` on `/admin/*` and on the cart or any filtered URL with query strings other than `category`.
 
 ## Checks

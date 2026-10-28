@@ -320,30 +320,12 @@ export const AdminEnquiryDetail: React.FC = () => {
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-line bg-bg/20">
-                <td colSpan={4} className="py-2 px-4 text-right text-muted font-light">
-                  Subtotal:
-                </td>
-                <td className="py-2 px-4 text-right font-mono font-medium text-ink">
-                  {formatINR(item.subtotalPaise)}
-                </td>
-              </tr>
-              {item.discountPaise > 0 && (
-                <tr className="bg-bg/20">
-                  <td colSpan={4} className="py-1 px-4 text-right text-emerald-600 font-light">
-                    Discount:
-                  </td>
-                  <td className="py-1 px-4 text-right font-mono text-emerald-600 font-medium">
-                    -{formatINR(item.discountPaise)}
-                  </td>
-                </tr>
-              )}
               <tr className="border-t border-line/80 bg-bg/40 font-medium">
                 <td colSpan={4} className="py-2.5 px-4 text-right text-ink">
                   Total:
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-sm text-ink font-normal">
-                  {formatINR(item.totalPaise)}
+                  {formatINR(item.subtotalPaise)}
                 </td>
               </tr>
             </tfoot>

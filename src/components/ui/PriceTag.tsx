@@ -17,7 +17,7 @@ export const PriceTag: React.FC<PriceTagProps> = ({
   className = '',
 }) => {
   const isSale = Boolean(compareAtPricePaise && compareAtPricePaise > pricePaise);
-  const discount = isSale && compareAtPricePaise ? savingPercent(pricePaise, compareAtPricePaise) : 0;
+  const percentSaved = isSale && compareAtPricePaise ? savingPercent(pricePaise, compareAtPricePaise) : 0;
 
   const sizeClasses = {
     sm: {
@@ -51,11 +51,11 @@ export const PriceTag: React.FC<PriceTagProps> = ({
         </span>
       )}
 
-      {showSavingPercent && discount > 0 && (
+      {showSavingPercent && percentSaved > 0 && (
         <span
           className={`bg-surface text-accent px-1.5 py-0.5 rounded-ui font-medium ${sizeClasses.percent}`}
         >
-          Save {discount}%
+          Save {percentSaved}%
         </span>
       )}
     </div>

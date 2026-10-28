@@ -23,7 +23,6 @@ export interface CreateEnquiryResult {
   ref: string;
   items: EnquiryServerLineItem[];
   subtotal_paise: number;
-  discount_paise: number;
 }
 
 export async function createEnquiryRpc(
@@ -48,14 +47,13 @@ export async function createEnquiryRpc(
     p_items: payload as unknown as Json,
     p_channel: channel,
     p_note: note ? note.trim().slice(0, 500) : null,
-    p_coupon: null,
   });
 
   if (error || !data) {
     throw new Error(error?.message || 'Failed to create enquiry');
   }
 
-  // The RPC returns jsonb with { ref, items, subtotal_paise, discount_paise }
+  // The RPC returns jsonb with { ref, items, subtotal_paise }
   return data as unknown as CreateEnquiryResult;
 }
 

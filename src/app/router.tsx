@@ -4,7 +4,6 @@ import Layout from './Layout';
 import Home from '@/features/pages/Home';
 import Shop from '@/features/catalog/Shop';
 import ProductDetail from '@/features/catalog/ProductDetail';
-import DealsPage from '@/features/deals/DealsPage';
 import OurStory from '@/features/pages/OurStory';
 import Contact from '@/features/pages/Contact';
 import Privacy from '@/features/pages/Privacy';
@@ -23,15 +22,10 @@ const AdminEnquiries = lazy(() => import('@/features/admin/AdminEnquiries'));
 const AdminEnquiryDetail = lazy(() => import('@/features/admin/AdminEnquiryDetail'));
 const AdminMore = lazy(() => import('@/features/admin/AdminMore'));
 
-// Placeholders for subsequent phases (Deals, Reviews, Content)
+// Placeholders for subsequent phases (Reviews, Content)
 const AdminReviews = lazy(() =>
   import('@/features/admin/AdminPlaceholders').then((m) => ({
     default: m.AdminReviewsPlaceholder,
-  }))
-);
-const AdminDeals = lazy(() =>
-  import('@/features/admin/AdminPlaceholders').then((m) => ({
-    default: m.AdminDealsPlaceholder,
   }))
 );
 const AdminContent = lazy(() =>
@@ -55,7 +49,6 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'shop', element: <Shop /> },
       { path: 'product/:slug', element: <ProductDetail /> },
-      { path: 'deals', element: <DealsPage /> },
       { path: 'our-story', element: <OurStory /> },
       { path: 'about', element: <Navigate to="/our-story" replace /> },
       { path: 'contact', element: <Contact /> },
@@ -92,7 +85,6 @@ export const router = createBrowserRouter([
       { path: 'products/:id', element: <AdminProductForm /> },
       { path: 'enquiries', element: <AdminEnquiries /> },
       { path: 'enquiries/:id', element: <AdminEnquiryDetail /> },
-      { path: 'deals', element: <AdminDeals /> },
       { path: 'reviews', element: <AdminReviews /> },
       { path: 'content', element: <AdminContent /> },
       { path: 'more', element: <AdminMore /> },

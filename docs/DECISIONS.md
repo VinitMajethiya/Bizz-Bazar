@@ -58,8 +58,11 @@ Only the owner signs in. Admin rights come from `profiles.role`, checked by `is_
 ## 018: Enquiry inbox with new, handled, and dropped statuses
 2026-10-28. The admin manages customer leads as a clean inbox: `new`, `handled`, `dropped`. Enquiries include internal notes with blur autosave, quick status toggle actions, and a one-click "Copy reply message" button formatted for chat. Why: Gives the owner an efficient workflow to triage incoming leads and maintain notes without an e-commerce order management system.
 
-## 019: Deals simplified to percentage and flat coupons
-2026-10-28. Deals are restricted to percentage and flat amount coupons. Complex bundles and fixed-price logic were removed from UI, types, and database queries. Why: Keeps coupon calculations predictable, easy to understand in chat orders, and straightforward for the owner to manage.
+## 019: [SUPERSEDED by 020] Deals simplified to percentage and flat coupons
+2026-10-28. Originally simplified deals to percent/flat codes. Superseded by Decision 020.
+
+## 020: No coupons or deals; the site is a catalogue
+2026-10-28. Completely removed all deals, promo codes, discounts, and coupon systems across database, storefront, admin, and order messages. Supersedes Decision 009 (defer coupon UI) and Decision 019 (simplified coupons). Why: The brand sells at fair everyday prices with no artificial markups or discounts. A clean digital catalogue without promotional gimmicks directly reflects the brand ethos: "everyday luxury, without the luxury price."
 
 ## Template
 ```

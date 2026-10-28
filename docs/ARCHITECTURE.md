@@ -6,14 +6,12 @@
 | `/` | Home | settings, featured products, testimonials, guarantees |
 | `/shop` | Catalogue (`?category=`, `?sort=`) | live products + hero images |
 | `/product/:slug` | Product | product, images, approved reviews, related |
-| `/deals` | Deals | live deals + their products |
 | `/our-story`, `/about` (redirect) | CMS page | `pages` row |
 | `/contact` | Contact | settings + `contact_messages` insert |
 | `/privacy`, `/terms`, `/how-to-order` | CMS pages | `pages` row |
 | `/admin/login` | Sign in | Supabase Auth |
 | `/admin` | Overview | counters |
 | `/admin/products`, `/admin/products/new`, `/admin/products/:id` | Catalogue and media | products, product_images |
-| `/admin/deals` | Deals | deals |
 | `/admin/enquiries`, `/admin/enquiries/:id` | Enquiry inbox | enquiries |
 | `/admin/reviews` | Moderation | reviews |
 | `/admin/content` | Pages, settings, testimonials, leads, messages | pages, site_settings, newsletter_leads, contact_messages |
@@ -28,7 +26,7 @@ UI components  ->  feature hooks (TanStack Query)  ->  api functions (lib/api/*.
 ```
 - Components never call Supabase directly. They use hooks like `useProducts()`, `useProduct(slug)`, `useSettings()`.
 - `lib/api/*.ts` holds one function per query or mutation, returns typed data, throws typed errors.
-- Query keys: `['products', {category}]`, `['product', slug]`, `['settings']`, `['pages', slug]`, `['reviews', productId]`, `['deals']`, admin keys prefixed with `'admin'`.
+- Query keys: `['products', {category}]`, `['product', slug]`, `['settings']`, `['pages', slug]`, `['reviews', productId]`, admin keys prefixed with `'admin'`.
 - Settings and pages: `staleTime` 5 minutes. Products: 1 minute. Admin lists: realtime subscription plus invalidate on mutation.
 
 ## Core types (sketch)
@@ -64,7 +62,7 @@ placeOrder(channel: 'whatsapp' | 'instagram', lines: CartLine[], note: string): 
 3. Build the message from the RPC response (server prices), not from client data.
 4. WhatsApp: `window.location.href = https://wa.me/<digits only>?text=<encoded>` on mobile, `window.open` on desktop. Strip `+`, spaces and dashes from the number.
 5. Instagram: `navigator.clipboard.writeText(message)`, toast "Order copied. Paste it in the chat.", then open `https://ig.me/m/<handle>`. If the clipboard call fails, show the message in a modal with a Copy button.
-6. Clear the bag only for a bag checkout, and only after the chat link has been opened.
+6. Clear the bag only for a bag order, and only after the chat link has been opened.
 
 Open the link inside the click handler's call stack where possible, otherwise mobile browsers block the popup. If an async gap makes this unreliable, show a "Continue to WhatsApp" button after the enquiry is saved.
 

@@ -9,7 +9,6 @@ import {
   LogOut,
   ExternalLink,
   MoreHorizontal,
-  Tag,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { signOutAdmin } from '../../lib/api/auth';
@@ -86,17 +85,6 @@ export const AdminLayout: React.FC = () => {
             >
               <Star className="w-4 h-4 stroke-[1.5]" />
               <span>Reviews</span>
-            </NavLink>
-            <NavLink
-              to="/admin/deals"
-              className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2 rounded-none transition-colors ${
-                  isActive ? 'bg-ink text-bg font-normal' : 'text-muted hover:text-ink hover:bg-line/50 font-light'
-                }`
-              }
-            >
-              <Tag className="w-4 h-4 stroke-[1.5]" />
-              <span>Deals</span>
             </NavLink>
             <NavLink
               to="/admin/content"

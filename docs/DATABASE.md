@@ -85,8 +85,6 @@ create table enquiries (
   ref text unique not null,
   items_json jsonb not null,              -- [{product_id,name,options,unit_price_paise,qty}]
   subtotal_paise integer not null,
-  discount_paise integer not null default 0,
-  coupon_code text,
   channel chat_channel not null,
   customer_note text,
   internal_notes text,
@@ -240,6 +238,111 @@ alter type enquiry_status rename value 'converted' to 'handled';
 
 -- Add internal notes for admin note-taking
 alter table enquiries add column if not exists internal_notes text;
+```
+
+## 010 remove deals and add reviews stats and show_on_home
+```sql
+-- Drop deals table & discount_type
+drop table if exists deals cascade;
+drop type if exists discount_type cascade;
+drop function if exists quote_cart cascade;
+drop function if exists compute_cart cascade;
+
+-- Clean enquiry columns
+alter table enquiries drop column if exists coupon_code;
+alter table enquiries drop column if exists discount_paise;
+
+-- Update create_enquiry to 3 arguments
+drop function if exists create_enquiry(jsonb, chat_channel, text, text);
+drop function if exists create_enquiry(jsonb, chat_channel, text);
+
+create or replace function create_enquiry(
+  p_items jsonb,
+  p_channel chat_channel,
+  p_note text default null
+) returns jsonb
+language plpgsql security definer
+set search_path = public, extensions as $$
+declare
+  v_ref text;
+  v_item jsonb;
+  v_prod products%rowtype;
+  v_subtotal integer := 0;
+  v_qty integer;
+  v_out_items jsonb := '[]'::jsonb;
+begin
+  if p_items is null or jsonb_array_length(p_items) = 0 then
+    raise exception 'bag is empty';
+  end if;
+
+  for v_item in select * from jsonb_array_elements(p_items) loop
+    select * into v_prod from products where id = (v_item->>'product_id')::uuid;
+
+    if not found or v_prod.is_archived or v_prod.stock_status = 'sold_out' then
+      raise exception 'product unavailable: %', coalesce(v_prod.name, v_item->>'product_id');
+    end if;
+
+    v_qty := coalesce((v_item->>'qty')::integer, 1);
+    if v_qty < 1 or v_qty > 10 then
+      raise exception 'quantity out of range for %: %', v_prod.name, v_qty;
+    end if;
+
+    if v_prod.stock_qty is not null and v_prod.stock_qty < v_qty then
+      raise exception 'insufficient stock for %: % requested, % available', v_prod.name, v_qty, v_prod.stock_qty;
+    end if;
+
+    v_subtotal := v_subtotal + (v_prod.price_paise * v_qty);
+
+    v_out_items := v_out_items || jsonb_build_object(
+      'product_id', v_prod.id,
+      'name', v_prod.name,
+      'options', coalesce(v_item->'options', '{}'::jsonb),
+      'unit_price_paise', v_prod.price_paise,
+      'qty', v_qty
+    );
+  end loop;
+
+  v_ref := 'BR-' || upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 6));
+
+  insert into enquiries (ref, items_json, subtotal_paise, channel, customer_note, status)
+  values (v_ref, v_out_items, v_subtotal, p_channel, nullif(trim(p_note), ''), 'new');
+
+  return jsonb_build_object(
+    'ref', v_ref,
+    'items', v_out_items,
+    'subtotal_paise', v_subtotal
+  );
+end $$;
+
+revoke execute on function create_enquiry(jsonb, chat_channel, text) from public;
+grant execute on function create_enquiry(jsonb, chat_channel, text) to anon, authenticated;
+
+-- Reviews show_on_home column
+alter table reviews add column if not exists show_on_home boolean not null default false;
+
+-- Replace public insert policy
+drop policy if exists "public create reviews" on reviews;
+create policy "public create reviews" on reviews for insert with check (
+  status = 'pending' and
+  is_offline = false and
+  show_on_home = false and
+  rating between 1 and 5 and
+  char_length(reviewer_name) <= 80 and
+  (title is null or char_length(title) <= 120) and
+  char_length(review_text) between 10 and 2000
+);
+
+-- View product_review_stats (security_invoker = true)
+create or replace view product_review_stats with (security_invoker = true) as
+select
+  product_id,
+  count(*)::integer as review_count,
+  round(avg(rating)::numeric, 1)::double precision as average_rating
+from reviews
+where status = 'approved' and product_id is not null
+group by product_id;
+
+grant select on product_review_stats to anon, authenticated;
 ```
 
 ## Settings keys

@@ -7,7 +7,7 @@ Vite + React + TypeScript strict, Tailwind with tokens from DESIGN.md, Jost font
 **Accept:** all routes render inside the shell on a 360px screen; light and dark both look right.
 
 ## Phase 1: database and seed
-Run migrations 001 to 007 on a Supabase project. Write `npm run seed` to insert products, settings, pages, the FIRST10 deal and testimonials from `CATALOG.md`, and to upload images from `supabase/seed/images/`. Generate TypeScript types from the schema.
+Run migrations 001 to 007 on a Supabase project. Write `npm run seed` to insert products, settings, pages, and testimonials from `CATALOG.md`, and to upload images from `supabase/seed/images/`. Generate TypeScript types from the schema.
 **Accept:** products and settings visible in the Supabase table editor; anon key can read products but cannot read enquiries.
 
 ## Phase 2: storefront read-only
@@ -26,9 +26,9 @@ Email and password sign in, `AdminGuard` that checks `profiles.role`, mobile-fri
 Enquiries inbox with live updates (Supabase realtime), detail view, search, channel filters, status filter chips (`new`, `handled`, `dropped`), internal notes with autosave, copy pre-formatted reply message, overview counters. (Scope change: catalogue only, no orders table or fulfilment tracking).
 **Accept:** an enquiry placed on the storefront appears in the admin inbox within seconds, can be marked handled or dropped, and internal notes persist.
 
-## Phase 6: reviews and deals
-Review form with honeypot and validation, pending queue, approve, reject, delete, offline testimonials, average and count on product pages and in JSON-LD. Deals admin (percentage and flat coupon codes only), `/deals` page with copy-code, coupon validation inside `create_enquiry`.
-**Accept:** a submitted review is invisible to the public until approved; a valid coupon code changes the stored enquiry discount.
+## Phase 6: reviews (reviews only — no coupons or deals)
+Review form with honeypot and validation, spam prevention (3s minimum interaction, 24h duplicate guard), pending moderation queue, approve/show, reject/hide, delete, offline testimonials, show_on_home toggle, average and count via `product_review_stats` view on product pages and in JSON-LD.
+**Accept:** a submitted review is invisible to the public until approved; the admin controls which reviews are shown and which appear on the home page.
 
 ## Phase 7: content pages and settings
 Story, contact (form saves to `contact_messages`), privacy, terms, how-to-order rendered from `pages` markdown (sanitised). Admin editors for pages and for every settings key, hero image upload, guarantees and testimonials editing, drop-alert signup and lead list.

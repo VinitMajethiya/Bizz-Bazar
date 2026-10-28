@@ -43,7 +43,6 @@ describe('placeOrder flow', () => {
         },
       ],
       subtotal_paise: 49900,
-      discount_paise: 0,
     };
 
     vi.spyOn(enquiriesApi, 'createEnquiryRpc').mockResolvedValue(mockRpcResult);
@@ -86,7 +85,6 @@ describe('placeOrder flow', () => {
         },
       ],
       subtotal_paise: 79800,
-      discount_paise: 0,
     };
 
     vi.spyOn(enquiriesApi, 'createEnquiryRpc').mockResolvedValue(mockRpcResult);
@@ -161,7 +159,6 @@ describe('placeOrder flow', () => {
       ref: 'BR-111111',
       items: [{ product_id: 'p1', name: 'Item', options: {}, unit_price_paise: 100, qty: 1 }],
       subtotal_paise: 100,
-      discount_paise: 0,
     });
 
     const res1 = await call1;

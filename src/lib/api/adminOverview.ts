@@ -7,7 +7,6 @@ export interface AdminCounters {
   liveProducts: number;
   lowStockOrSoldOut: number;
   pendingReviews: number;
-  liveDeals: number;
   dropAlertLeads: number;
 }
 
@@ -40,7 +39,6 @@ export async function fetchAdminOverviewStats(): Promise<{
         liveProducts: 0,
         lowStockOrSoldOut: 0,
         pendingReviews: 0,
-        liveDeals: 0,
         dropAlertLeads: 0,
       },
       latestEnquiries: [],
@@ -110,7 +108,6 @@ export async function fetchAdminOverviewStats(): Promise<{
       liveProducts: liveProductsCount || 0,
       lowStockOrSoldOut: lowStockCount || 0,
       pendingReviews: 0, // Until Phase 6
-      liveDeals: 0, // Until Phase 6
       dropAlertLeads: leadsCount || 0,
     },
     latestEnquiries: formattedEnquiries,

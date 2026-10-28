@@ -16,7 +16,6 @@ export interface AdminEnquiry {
   items: EnquiryItemData[];
   itemsSummary: string;
   subtotalPaise: number;
-  discountPaise: number;
   totalPaise: number;
   customerNote: string | null;
   internalNotes: string | null;
@@ -74,8 +73,7 @@ export async function fetchAdminEnquiries(
       items: parsedItems,
       itemsSummary: formatItemsSummary(parsedItems),
       subtotalPaise: e.subtotal_paise,
-      discountPaise: e.discount_paise || 0,
-      totalPaise: e.subtotal_paise - (e.discount_paise || 0),
+      totalPaise: e.subtotal_paise,
       customerNote: e.customer_note,
       internalNotes: e.internal_notes || null,
       status: e.status,
@@ -118,8 +116,7 @@ export async function fetchAdminEnquiryById(id: string): Promise<AdminEnquiry | 
     items: parsedItems,
     itemsSummary: formatItemsSummary(parsedItems),
     subtotalPaise: e.subtotal_paise,
-    discountPaise: e.discount_paise || 0,
-    totalPaise: e.subtotal_paise - (e.discount_paise || 0),
+    totalPaise: e.subtotal_paise,
     customerNote: e.customer_note,
     internalNotes: e.internal_notes || null,
     status: e.status,
@@ -154,3 +151,4 @@ export async function updateEnquiryInternalNotes(
     throw new Error(`Failed to update internal notes: ${error.message}`);
   }
 }
+

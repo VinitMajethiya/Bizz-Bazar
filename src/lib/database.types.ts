@@ -10,7 +10,6 @@ export type StockStatus = 'in_stock' | 'low_stock' | 'sold_out';
 export type ChatChannel = 'whatsapp' | 'instagram';
 export type EnquiryStatus = 'new' | 'handled' | 'dropped';
 export type ReviewStatus = 'pending' | 'approved' | 'rejected';
-export type DiscountType = 'percent' | 'flat' | 'fixed_price' | 'bundle';
 
 export interface Database {
   public: {
@@ -140,56 +139,12 @@ export interface Database {
           },
         ];
       };
-      deals: {
-        Row: {
-          id: string;
-          title: string;
-          code: string | null;
-          discount_type: DiscountType;
-          discount_value: number;
-          bundle_config: Json | null;
-          start_date: string;
-          end_date: string | null;
-          active: boolean;
-          applicable_products: string[] | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          title: string;
-          code?: string | null;
-          discount_type: DiscountType;
-          discount_value: number;
-          bundle_config?: Json | null;
-          start_date?: string;
-          end_date?: string | null;
-          active?: boolean;
-          applicable_products?: string[] | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          title?: string;
-          code?: string | null;
-          discount_type?: DiscountType;
-          discount_value?: number;
-          bundle_config?: Json | null;
-          start_date?: string;
-          end_date?: string | null;
-          active?: boolean;
-          applicable_products?: string[] | null;
-          created_at?: string;
-        };
-        Relationships: [];
-      };
       enquiries: {
         Row: {
           id: string;
           ref: string;
           items_json: Json;
           subtotal_paise: number;
-          discount_paise: number;
-          coupon_code: string | null;
           channel: ChatChannel;
           customer_note: string | null;
           internal_notes: string | null;
@@ -201,8 +156,6 @@ export interface Database {
           ref: string;
           items_json: Json;
           subtotal_paise: number;
-          discount_paise?: number;
-          coupon_code?: string | null;
           channel: ChatChannel;
           customer_note?: string | null;
           internal_notes?: string | null;
@@ -214,8 +167,6 @@ export interface Database {
           ref?: string;
           items_json?: Json;
           subtotal_paise?: number;
-          discount_paise?: number;
-          coupon_code?: string | null;
           channel?: ChatChannel;
           customer_note?: string | null;
           internal_notes?: string | null;
@@ -355,13 +306,11 @@ export interface Database {
           p_items: Json;
           p_channel: ChatChannel;
           p_note?: string | null;
-          p_coupon?: string | null;
         };
         Returns: {
           ref: string;
           items: Json;
           subtotal_paise: number;
-          discount_paise: number;
         };
       };
     };
@@ -370,7 +319,6 @@ export interface Database {
       chat_channel: ChatChannel;
       enquiry_status: EnquiryStatus;
       review_status: ReviewStatus;
-      discount_type: DiscountType;
     };
     CompositeTypes: {
       [_ in never]: never;

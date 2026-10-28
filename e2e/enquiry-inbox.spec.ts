@@ -97,7 +97,6 @@ test.describe('Enquiry Inbox Smoke Test', () => {
             },
           ],
           subtotal_paise: 49900,
-          discount_paise: 0,
         }),
       });
     });
@@ -142,8 +141,6 @@ test.describe('Enquiry Inbox Smoke Test', () => {
           },
         ],
         subtotal_paise: 49900,
-        discount_paise: 0,
-        coupon_code: null,
         channel: 'whatsapp',
         customer_note: 'Gift wrap please',
         internal_notes: internalNotes,

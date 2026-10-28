@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Tag, Settings, ExternalLink, LogOut, Shield } from 'lucide-react';
+import { Settings, ExternalLink, LogOut, Shield } from 'lucide-react';
 import { signOutAdmin } from '../../lib/api/auth';
 import { useToastStore } from '@/components/ui/toastStore';
 
@@ -26,20 +26,6 @@ export const AdminMore: React.FC = () => {
       </div>
 
       <div className="border border-line divide-y divide-line bg-surface rounded-none">
-        <Link
-          to="/admin/deals"
-          className="p-4 flex items-center justify-between hover:bg-bg transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <Tag className="w-4 h-4 text-ink stroke-[1.5]" />
-            <div>
-              <p className="text-xs font-normal text-ink">Deals &amp; Discounts</p>
-              <p className="text-[11px] text-muted font-light">Manage promotions and bundle offers</p>
-            </div>
-          </div>
-          <span className="text-[10px] text-muted font-mono uppercase bg-bg px-2 py-0.5 border border-line">Phase 6</span>
-        </Link>
-
         <Link
           to="/admin/content"
           className="p-4 flex items-center justify-between hover:bg-bg transition-colors"

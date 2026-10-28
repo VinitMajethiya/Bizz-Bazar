@@ -39,14 +39,6 @@ export const Header: React.FC = () => {
               Catalogue
             </NavLink>
             <NavLink
-              to="/deals"
-              className={({ isActive }) =>
-                `transition-colors hover:text-accent ${isActive ? 'text-accent font-medium' : 'text-ink'}`
-              }
-            >
-              Deals
-            </NavLink>
-            <NavLink
               to="/our-story"
               className={({ isActive }) =>
                 `transition-colors hover:text-accent ${isActive ? 'text-accent font-medium' : 'text-ink'}`
@@ -93,13 +85,6 @@ export const Header: React.FC = () => {
               className="py-2 text-ink hover:text-accent transition-colors"
             >
               Catalogue
-            </Link>
-            <Link
-              to="/deals"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-ink hover:text-accent transition-colors"
-            >
-              Deals & Offers
             </Link>
             <Link
               to="/our-story"

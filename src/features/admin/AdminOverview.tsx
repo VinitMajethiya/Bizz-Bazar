@@ -4,7 +4,6 @@ import {
   Inbox,
   MessageCircle,
   Star,
-  Tag,
   AlertTriangle,
   Users,
   Package,
@@ -51,13 +50,6 @@ export const AdminOverview: React.FC = () => {
       count: data?.counters.pendingReviews ?? 0,
       icon: Star,
       to: '/admin/reviews',
-      highlight: false,
-    },
-    {
-      label: 'Live Deals',
-      count: data?.counters.liveDeals ?? 0,
-      icon: Tag,
-      to: '/admin/deals',
       highlight: false,
     },
     {
