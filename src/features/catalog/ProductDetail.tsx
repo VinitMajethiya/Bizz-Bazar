@@ -92,7 +92,7 @@ export const ProductDetail: React.FC = () => {
         lines: [line],
         note: null,
         settings,
-        isBagCheckout: false,
+        isFromBag: false,
       });
     } finally {
       setIsOrdering(false);
@@ -172,15 +172,6 @@ export const ProductDetail: React.FC = () => {
       content: (
         <p>
           Every piece comes in a gift box with a care card. Add a gift note in your bag.
-        </p>
-      ),
-    },
-    {
-      id: 'shipping',
-      title: 'Shipping, exchange and warranty',
-      content: (
-        <p>
-          Orders dispatch in 24 to 48 hours. Standard pan-India delivery takes 3 to 7 working days. If a piece arrives damaged or faulty, message us within 48 hours for an exchange.
         </p>
       ),
     },
@@ -307,7 +298,7 @@ export const ProductDetail: React.FC = () => {
                 </span>
               ) : (
                 <span className="text-xs font-normal text-ink inline-flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-green-600" /> In stock &bull; Ready to dispatch
+                  <span className="w-2 h-2 rounded-full bg-green-600" /> In stock &bull; Available
                 </span>
               )}
             </div>

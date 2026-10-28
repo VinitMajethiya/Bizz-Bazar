@@ -2,17 +2,19 @@ import { formatINR } from '../money';
 
 export interface ReplyMessageParams {
   ref: string;
+  itemsSummary: string;
   subtotalPaise: number;
 }
 
 /**
  * Builds the admin reply message from docs/CONTENT.md:
- * "Hi! Thanks for your order {ref}. Your total is {subtotal}. Please send your name, phone number and full delivery address and we’ll confirm it."
+ * "Hi! Thanks for your enquiry {ref} for {items}. Your total is {subtotal}. We’ll confirm availability and next steps here in chat."
  */
 export function buildAdminReplyMessage({
   ref,
+  itemsSummary,
   subtotalPaise,
 }: ReplyMessageParams): string {
   const formattedSubtotal = formatINR(subtotalPaise);
-  return `Hi! Thanks for your order ${ref}. Your total is ${formattedSubtotal}. Please send your name, phone number and full delivery address and we’ll confirm it.`;
+  return `Hi! Thanks for your enquiry ${ref} for ${itemsSummary}. Your total is ${formattedSubtotal}. We’ll confirm availability and next steps here in chat.`;
 }

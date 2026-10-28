@@ -17,7 +17,7 @@ export interface PlaceOrderOptions {
   lines: CartLine[];
   note?: string | null;
   settings?: SiteSettings;
-  isBagCheckout?: boolean;
+  isFromBag?: boolean;
 }
 
 export async function placeOrder({
@@ -25,7 +25,7 @@ export async function placeOrder({
   lines,
   note,
   settings,
-  isBagCheckout = false,
+  isFromBag = false,
 }: PlaceOrderOptions): Promise<boolean> {
   if (isSubmitting) {
     return false;
@@ -89,11 +89,11 @@ export async function placeOrder({
           ref: result.ref,
           message,
           targetUrl,
-          isBagCheckout,
+          isFromBag,
         });
       }
 
-      if (isBagCheckout) {
+      if (isFromBag) {
         useCartStore.getState().clearCart();
         useCartStore.getState().closeDrawer();
       }
@@ -105,10 +105,10 @@ export async function placeOrder({
         ref: result.ref,
         message,
         targetUrl,
-        isBagCheckout,
+        isFromBag,
       });
 
-      if (isBagCheckout) {
+      if (isFromBag) {
         useCartStore.getState().closeDrawer();
       }
     }

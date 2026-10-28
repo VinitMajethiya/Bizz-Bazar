@@ -5,7 +5,7 @@ import { useToastStore } from '../../components/ui/toastStore';
 import { useCartStore } from '../cart/cartStore';
 
 export const OrderModal: React.FC = () => {
-  const { isOpen, channel, ref: orderRef, message, targetUrl, isBagCheckout, closeModal } =
+  const { isOpen, channel, ref: orderRef, message, targetUrl, isFromBag, closeModal } =
     useOrderModalStore();
   const { showToast } = useToastStore();
   const [copied, setCopied] = useState(false);
@@ -110,7 +110,7 @@ export const OrderModal: React.FC = () => {
   };
 
   const handleOpenChat = () => {
-    if (isBagCheckout) {
+    if (isFromBag) {
       useCartStore.getState().clearCart();
     }
     window.open(targetUrl, '_blank', 'noopener,noreferrer');

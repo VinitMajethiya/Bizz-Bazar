@@ -100,7 +100,7 @@ export const CartDrawer: React.FC = () => {
         lines,
         note,
         settings,
-        isBagCheckout: true,
+        isFromBag: true,
       });
     } finally {
       setSubmitting(false);

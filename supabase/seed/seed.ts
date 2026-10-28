@@ -302,14 +302,12 @@ Pieces are made in small batches and dispatched directly to your doorstep in sig
 - **Business hours**: Monday to Saturday, 10:00 AM – 7:00 PM IST`,
   },
   {
-    slug: 'shipping-returns',
-    title: 'Shipping and Returns',
-    meta_description: 'Shipping details, dispatch timelines and return policies for By Raya.co.',
-    body_md: `- Orders are confirmed in chat. We dispatch within 24 to 48 hours after confirmation.
-- Delivery usually takes 3 to 7 working days across India. We share a tracking number once the order ships.
-- Because of hygiene, earrings cannot be exchanged unless received damaged or defective.
-- If your order arrives damaged or faulty, message us within 48 hours with photos and we will exchange it.
-- Prices are in Indian rupees. Payment is arranged directly in chat.`,
+    slug: 'how-to-order',
+    title: 'How to Order',
+    meta_description: 'How to place an enquiry and order from By Raya.co.',
+    body_md: `- Browse our catalogue and pick your pieces.
+- Tap Order on WhatsApp or Order on Instagram to send your enquiry reference and chosen pieces.
+- We confirm availability, order specifics, and next steps directly with you in chat: [owner: add specific payment instructions, delivery zones, and response times here].`,
   },
   {
     slug: 'privacy',
@@ -317,9 +315,9 @@ Pieces are made in small batches and dispatched directly to your doorstep in sig
     meta_description: 'How By Raya.co collects and protects your information.',
     body_md: `At By Raya.co, we respect your privacy.
 
-**What we collect**: The name, phone number, and delivery address you share with us during chat checkout or via our contact form, along with your email or phone if you opt into drop alerts.
+**What we collect**: The name, phone number, and details you share with us during chat ordering or via our contact form, along with your email or phone if you opt into drop alerts.
 
-**Why we collect it**: To process your orders, provide order tracking, reply to your inquiries, and send occasional launch alerts you requested.
+**Why we collect it**: To process your enquiries, reply to your inquiries, and send occasional launch alerts you requested.
 
 **Who sees it**: Only the shop owner and our secure hosting providers. We never sell or share your information with advertisers.
 
@@ -329,11 +327,11 @@ Pieces are made in small batches and dispatched directly to your doorstep in sig
     slug: 'terms',
     title: 'Terms of Service',
     meta_description: 'Terms and conditions for By Raya.co customers.',
-    body_md: `- Orders placed on the storefront are enquiries until confirmed in chat.
+    body_md: `- Orders placed on the storefront are enquiries confirmed in chat.
+- Payment and delivery are arranged directly with the shop in chat.
 - Prices and stock availability can change until confirmation.
 - Product photos may differ slightly in colour due to studio lighting and screen settings.
-- Customer reviews are moderated before publishing.
-- The shop may cancel and refund an order it cannot fulfil.`,
+- Customer reviews are moderated before publishing.`,
   },
 ];
 

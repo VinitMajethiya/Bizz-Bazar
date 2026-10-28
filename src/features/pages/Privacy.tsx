@@ -14,7 +14,7 @@ export const Privacy: React.FC = () => {
           </p>
           <h2 className="text-sm font-medium text-ink pt-2">1. Information We Collect</h2>
           <p>
-            When you initiate an order, we record your chosen pieces, options, and reference code. Delivery details (name, phone, address) are shared directly with us in chat.
+            When you initiate an order, we record your chosen pieces, options, and enquiry reference code. Specific contact details and instructions are shared directly with us in chat.
           </p>
           <h2 className="text-sm font-medium text-ink pt-2">2. Local Storage</h2>
           <p>

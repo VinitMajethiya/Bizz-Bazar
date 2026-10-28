@@ -142,7 +142,7 @@ describe('CartDrawer Component', () => {
     expect(placeOrderSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         channel: 'whatsapp',
-        isBagCheckout: true,
+        isFromBag: true,
       })
     );
   });

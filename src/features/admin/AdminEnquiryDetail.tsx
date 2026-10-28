@@ -95,6 +95,7 @@ export const AdminEnquiryDetail: React.FC = () => {
   const handleCopyReplyMessage = async () => {
     const text = buildAdminReplyMessage({
       ref: item.ref,
+      itemsSummary: item.itemsSummary,
       subtotalPaise: item.subtotalPaise,
     });
 

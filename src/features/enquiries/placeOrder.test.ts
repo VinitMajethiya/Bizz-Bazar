@@ -59,7 +59,7 @@ describe('placeOrder flow', () => {
       lines: useCartStore.getState().lines,
       note: 'Birthday gift',
       settings: mockSettings,
-      isBagCheckout: true,
+      isFromBag: true,
     });
 
     expect(success).toBe(true);
@@ -69,7 +69,7 @@ describe('placeOrder flow', () => {
       expect.any(Array),
       'Birthday gift'
     );
-    // Cart should be cleared after bag checkout
+    // Cart should be cleared after placing order from bag
     expect(useCartStore.getState().lines).toHaveLength(0);
   });
 
@@ -96,7 +96,7 @@ describe('placeOrder flow', () => {
       lines: [{ productId: 'prod-2', options: { material: 'Gold' }, qty: 2 }],
       note: null,
       settings: mockSettings,
-      isBagCheckout: false,
+      isFromBag: false,
     });
 
     expect(success).toBe(true);

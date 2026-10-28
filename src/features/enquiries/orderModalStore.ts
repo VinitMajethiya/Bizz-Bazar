@@ -6,7 +6,7 @@ export interface OrderModalData {
   ref: string;
   message: string;
   targetUrl: string;
-  isBagCheckout: boolean;
+  isFromBag: boolean;
 }
 
 interface OrderModalStore extends OrderModalData {
@@ -20,7 +20,7 @@ export const useOrderModalStore = create<OrderModalStore>((set) => ({
   ref: '',
   message: '',
   targetUrl: '',
-  isBagCheckout: false,
+  isFromBag: false,
   openModal: (data) => set({ ...data, isOpen: true }),
   closeModal: () => set({ isOpen: false }),
 }));

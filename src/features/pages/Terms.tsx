@@ -14,7 +14,7 @@ export const Terms: React.FC = () => {
           </p>
           <h2 className="text-sm font-medium text-ink pt-2">1. Chat Ordering</h2>
           <p>
-            Enquiries submitted on the site generate a unique reference. An order is finalized and confirmed only after direct agreement in chat and completion of payment.
+            Orders placed on the storefront are enquiries confirmed in chat. Payment and delivery are arranged directly with the shop in chat. Prices and stock availability can change until confirmation.
           </p>
           <h2 className="text-sm font-medium text-ink pt-2">2. Pricing and Availability</h2>
           <p>

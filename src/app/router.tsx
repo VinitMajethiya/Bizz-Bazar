@@ -9,7 +9,7 @@ import OurStory from '@/features/pages/OurStory';
 import Contact from '@/features/pages/Contact';
 import Privacy from '@/features/pages/Privacy';
 import Terms from '@/features/pages/Terms';
-import ShippingReturns from '@/features/pages/ShippingReturns';
+import HowToOrder from '@/features/pages/HowToOrder';
 import NotFound from '@/features/pages/NotFound';
 
 // Lazy-loaded admin routes so shoppers never download admin code
@@ -61,7 +61,8 @@ export const router = createBrowserRouter([
       { path: 'contact', element: <Contact /> },
       { path: 'privacy', element: <Privacy /> },
       { path: 'terms', element: <Terms /> },
-      { path: 'shipping-returns', element: <ShippingReturns /> },
+      { path: 'how-to-order', element: <HowToOrder /> },
+      { path: 'shipping-returns', element: <Navigate to="/how-to-order" replace /> },
       { path: '*', element: <NotFound /> },
     ],
   },
